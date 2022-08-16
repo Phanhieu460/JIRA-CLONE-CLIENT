@@ -3,6 +3,8 @@ import styled from "styled-components";
 import CreateIssue from "../Modal/CreateIssue";
 import { Tooltip } from "antd";
 import SearchIssue from "../Modal/SearchIssue";
+import ViewDetailIssue from "../Modal/ViewDetailIssue";
+import { Redirect } from "react-router-dom";
 
 const SideBar = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -58,6 +60,7 @@ const SideBar = () => {
           border: "none",
           padding: "0px 12px",
           marginLeft: "5px",
+          cursor: "pointer"
         }}
       >
         Github Repo

@@ -89,7 +89,10 @@ const ProjectSettings = () => {
           }}
         >
           <Button type="primary" htmlType="submit">
-            Save changes
+            Save 
+          </Button>
+          <Button type='default' style={{marginLeft: 10}}>
+            Cancel
           </Button>
         </Form.Item>
       </Form>
