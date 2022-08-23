@@ -1,11 +1,30 @@
-import React from "react";
+import React, {useState} from "react";
 import { Modal, Form, Button, Input, Select, Col, Row } from "antd";
 import "antd/dist/antd.min.css";
 import { Editor } from "@tinymce/tinymce-react";
+import axios from "axios";
+import issueApi from "../../api/issueApi";
 
 const { Option } = Select;
 
 const CreateIssue = (props) => {
+  const [title, setTitle] = useState('')
+  const handleChange = (e) => {
+    setTitle({
+      ...title,
+      [e.target.name]: [e.target.value]
+    })
+  }
+  const handleCreate = () => {
+    try {
+      const issueData = {
+title
+      }
+      issueApi.create(issueData)
+    } catch (error) {
+      
+    }
+  }
   return (
     <Modal
     style={{top: '50px'}}
@@ -15,7 +34,7 @@ const CreateIssue = (props) => {
       onOk={props.handleOk}
       onCancel={props.handleCancel}
       footer={[
-        <Button key="submit" type="primary" onClick={props.handleOk}>
+        <Button key="submit" type="primary" onClick={handleCreate}>
           Create Issue
         </Button>,
         <Button key="back" onClick={props.handleCancel}>
@@ -36,7 +55,7 @@ const CreateIssue = (props) => {
         }}
         autoComplete="off"
       >
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+        {/* <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col span={12}>
             <Form.Item
               label="Project"
@@ -54,7 +73,7 @@ const CreateIssue = (props) => {
               </Select>
             </Form.Item>
           </Col>
-        </Row>
+        </Row> */}
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col span={12}>
             <Form.Item
@@ -83,8 +102,8 @@ const CreateIssue = (props) => {
         <div style={{ border: "1px solid rgb(223, 225, 230)" }}></div>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col span={24}>
-            <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-              <Input />
+            <Form.Item label="Title" name="title" rules={[{ required: true }]}>
+              <Input name="title" value={title} onChange={handleChange} />
             </Form.Item>
           </Col>
         </Row>

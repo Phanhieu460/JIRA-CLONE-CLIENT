@@ -2,6 +2,9 @@ import React, {useState} from "react";
 import { Button, Form, Input, Checkbox } from "antd";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+import { withFormik } from "formik";
+import * as Yup from 'yup'
+import { connect } from "react-redux";
 
 const Register = () => {
     const [dataRegister, setDataRegister] = useState({
@@ -74,7 +77,40 @@ const Register = () => {
   );
 };
 
-export default Register;
+const RegisterWithFormik = withFormik({
+  mapPropsToValues: () => ({
+      username: '',
+      password: '',
+      rePassword: '',
+  }),
+  validationSchema: Yup.object().shape({
+      username: Yup.string().required('Username is required!'),
+      password: Yup.string().min(4, 'Your password must be at least 4 characters!'),
+      rePassword: Yup.string().when("password", {
+          is: val => (val && val.length > 0 ? true : false),
+          then: Yup.string().oneOf(
+              [Yup.ref("password")],
+              "Password do not match!"
+          )
+      })
+  }),
+
+  handleSubmit: (values, { setSubmitting, props }) => {
+      let { username, password } = values;
+      setSubmitting(true);
+      props.dispatch({
+          type: 'REGISTER_SAGA',
+          userRegister: {
+              login: username,
+              password: password,
+          }
+      })
+  },
+
+  displayName: 'Jira Bugs Register',
+})(Register);
+
+export default connect()(RegisterWithFormik);
 
 const StyledContainer = styled.div`
   display: flex;

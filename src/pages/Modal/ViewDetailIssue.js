@@ -12,16 +12,18 @@ const ViewDetailIssue = (props) => {
     "In Progress",
     "Done",
   ];
+
+  const test = [
+    { name: 'Status', items: listStatus}, 
+    {name: 'Assignee', items: ['Human 1', 'Human 2']}
+  ]
   const [visibleEditTaskName, setVisibleEditTaskName] = useState(false);
   return (
     <Modal
       width={1000}
       visible={props.visible}
       onOk={props.handleOk}
-      onCancel={() => {
-        // props.handleCancel
-        setVisibleEditTaskName(false);
-    }}
+      onCancel={props.handleCancel}
     >
       <Form
         name="basic"
@@ -65,16 +67,12 @@ const ViewDetailIssue = (props) => {
                 className="form-group"
                 style={{ display: "flex" }}
                 onSubmit={() => {
-                    setVisibleEditTaskName(false)
+                  setVisibleEditTaskName(false);
                 }}
               >
-                <Input
-                  type="text"
-                  name="name"
-                  required="required"
-                />
+                <Input type="text" name="name" required="required" />
                 <Button type="primary" htmlType="submit" className="ml-2">
-                <CheckOutlined />
+                  <CheckOutlined />
                 </Button>
               </form>
             ) : (
@@ -116,8 +114,24 @@ const ViewDetailIssue = (props) => {
           </Col>
           <Col span={8}>
             <div>
-              <label> Status</label>
-              <Select style={{ width: 150 }} defaultValue="Backlog">
+              <label style={{fontWeight: 600}}> STATUS</label>
+              <Select style={{ width: 150, display: 'block' }} defaultValue="Backlog">
+                {listStatus.map((item) => {
+                  return <Option value={item}>{item}</Option>;
+                })}
+              </Select>
+            </div>
+            <div>
+              <label style={{fontWeight: 600}}> ASSIGNEE</label>
+              <Select style={{ width: 150, display: 'block' }} defaultValue="Backlog">
+                {listStatus.map((item) => {
+                  return <Option value={item}>{item}</Option>;
+                })}
+              </Select>
+            </div>
+            <div>
+              <label style={{fontWeight: 600}}> REPORTER</label>
+              <Select style={{ width: 150, display: 'block' }} defaultValue="Backlog">
                 {listStatus.map((item) => {
                   return <Option value={item}>{item}</Option>;
                 })}

@@ -72,20 +72,20 @@ const SideBar = () => {
       <StyledSideBar>
         <div className="sidebar-icon">
           <div>
-            <i class="fa-brands fa-jira"></i>
+            <i className="fa-brands fa-jira"></i>
           </div>
           <div onClick={handleOpenDrawer}>
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <i className="fa-solid fa-magnifying-glass"></i>
           </div>
           <div onClick={handleClick}>
-            <i class="fa-solid fa-plus"></i>
+            <i className="fa-solid fa-plus"></i>
           </div>
           <div>
             <Tooltip placement="rightTop" title={text}>
               <button
                 style={{ backgroundColor: "rgb(7,71,166)", border: "none" }}
               >
-                <i class="fa-solid fa-circle-question"></i>
+                <i className="fa-solid fa-circle-question"></i>
               </button>
             </Tooltip>
           </div>
@@ -104,7 +104,7 @@ const SideBar = () => {
 export default SideBar;
 
 const StyledSideBar = styled.div`
-  height: 100vh;
+  min-height: 100vh;
   top: 0;
   left: 0;
   background-color: rgb(7, 71, 166);

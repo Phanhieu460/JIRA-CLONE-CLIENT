@@ -24,7 +24,7 @@ const Menu = () => {
           activeClassName="active font-weight-bold text-primary"
         >
           <div>
-            <i class="fa-solid fa-bars-progress"></i>
+            <i className="fa-solid fa-bars-progress"></i>
             <span>Kanban Board</span>
           </div>
         </NavLink>
@@ -34,7 +34,7 @@ const Menu = () => {
           activeClassName="active font-weight-bold text-primary"
         >
           <div>
-            <i class="fa-solid fa-gear"></i>
+            <i className="fa-solid fa-gear"></i>
             <span>Project settings</span>
           </div>
         </NavLink>
@@ -42,23 +42,23 @@ const Menu = () => {
       <div style={{ borderTop: "1px solid rgb(193, 199, 208)" }}></div>
       <StyledMenuFeature>
         <div>
-          <i class="fa-solid fa-shapes"></i>
+          <i className="fa-solid fa-shapes"></i>
           <span>Releases</span>
         </div>
         <div>
-          <i class="fa-solid fa-filter"></i>
+          <i className="fa-solid fa-filter"></i>
           <span>Issues and filters</span>
         </div>
         <div>
-          <i class="fa-solid fa-file-lines"></i>
+          <i className="fa-solid fa-file-lines"></i>
           <span>Pages</span>
         </div>
         <div>
-          <i class="fa-solid fa-flag"></i>
+          <i className="fa-solid fa-flag"></i>
           <span>Reports</span>
         </div>
         <div>
-          <i class="fa-solid fa-cube"></i>
+          <i className="fa-solid fa-cube"></i>
           <span>Components</span>
         </div>
       </StyledMenuFeature>
@@ -69,7 +69,7 @@ const Menu = () => {
 export default Menu;
 
 const StyledMenuBar = styled.div`
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f4f4f4;
   padding: 5%;
 `;
