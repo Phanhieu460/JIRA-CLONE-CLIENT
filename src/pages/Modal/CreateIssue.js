@@ -2,8 +2,6 @@ import React, {useState} from "react";
 import { Modal, Form, Button, Input, Select, Col, Row } from "antd";
 import "antd/dist/antd.min.css";
 import { Editor } from "@tinymce/tinymce-react";
-import axios from "axios";
-import issueApi from "../../api/issueApi";
 
 const { Option } = Select;
 
@@ -15,16 +13,7 @@ const CreateIssue = (props) => {
       [e.target.name]: [e.target.value]
     })
   }
-  const handleCreate = () => {
-    try {
-      const issueData = {
-title
-      }
-      issueApi.create(issueData)
-    } catch (error) {
-      
-    }
-  }
+
   return (
     <Modal
     style={{top: '50px'}}
@@ -34,7 +23,7 @@ title
       onOk={props.handleOk}
       onCancel={props.handleCancel}
       footer={[
-        <Button key="submit" type="primary" onClick={handleCreate}>
+        <Button key="submit" type="primary">
           Create Issue
         </Button>,
         <Button key="back" onClick={props.handleCancel}>

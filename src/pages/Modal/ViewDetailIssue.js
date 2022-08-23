@@ -1,4 +1,4 @@
-import { Modal, Row, Col, Form, Button, Select, Input } from "antd";
+import { Modal, Row, Col, Form, Button, Select, Input, Avatar } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Editor } from "@tinymce/tinymce-react";
@@ -12,12 +12,17 @@ const ViewDetailIssue = (props) => {
     "In Progress",
     "Done",
   ];
-
+  const [issueName, setIssueName] = useState("");
+  const [commentContent, setCommentContent] = useState("");
   const test = [
-    { name: 'Status', items: listStatus}, 
-    {name: 'Assignee', items: ['Human 1', 'Human 2']}
-  ]
+    { name: "Status", items: listStatus },
+    { name: "Assignee", items: ["Human 1", "Human 2"] },
+  ];
   const [visibleEditTaskName, setVisibleEditTaskName] = useState(false);
+  let userLogin = {
+    login: "Account",
+    imageUrl: "",
+  };
   return (
     <Modal
       width={1000}
@@ -70,9 +75,15 @@ const ViewDetailIssue = (props) => {
                   setVisibleEditTaskName(false);
                 }}
               >
-                <Input type="text" name="name" required="required" />
+                <Input
+                  type="text"
+                  name="issueName"
+                  onChange={(e) => setIssueName(e.target.value)}
+                  required="required"
+                  value={issueName}
+                />
                 <Button type="primary" htmlType="submit" className="ml-2">
-                  <CheckOutlined />
+                  OK
                 </Button>
               </form>
             ) : (
@@ -83,7 +94,6 @@ const ViewDetailIssue = (props) => {
                   style={{ cursor: "pointer", fontSize: 18, color: "#23B6A4" }}
                   onClick={() => {
                     setVisibleEditTaskName(true);
-                    // setTaskName(props.taskName);
                   }}
                 />
               </StyledTitle>
@@ -111,32 +121,90 @@ const ViewDetailIssue = (props) => {
                 }}
               />
             </StyledDescription>
+            <h6>Comment</h6>
+            <div className="block-comment mt-4" style={{ display: "flex" }}>
+              <div className="avatar">
+                {userLogin.imageUrl === "" || userLogin.imageUrl === null ? (
+                  <Avatar icon={<i className="fa fa-user-alt"></i>} />
+                ) : (
+                  <Avatar
+                    src={userLogin.imageUrl}
+                    style={{ width: 40, height: 40 }}
+                  />
+                )}
+              </div>
+              <div className="input-comment">
+                <Input
+                  type="text"
+                  placeholder="Add a comment..."
+                  value={commentContent}
+                  onChange={(e) => {
+                    setCommentContent(e.target.value);
+                  }}
+                />
+                {/* <p>
+                                                <span style={{ fontWeight: 500, color: 'gray' }}>Protip:</span>
+                                                <span>press
+                                                    <span style={{ fontWeight: 'bold', background: '#ecedf0', color: '#b4bac6' }}>M</span>
+                                                    to comment</span>
+                                            </p> */}
+              </div>
+              <div>
+                <Button type="primary" style={{ height: 32 }} className="ml-2">
+                  Save
+                </Button>
+              </div>
+            </div>
+            {/* <div className="lastest-comment mt-4">
+                                        {renderCommnets()}
+                                    </div> */}
           </Col>
           <Col span={8}>
             <div>
-              <label style={{fontWeight: 600}}> STATUS</label>
-              <Select style={{ width: 150, display: 'block' }} defaultValue="Backlog">
+              <label style={{ fontWeight: 600 }}> STATUS</label>
+              <Select style={{ width: 150, display: "block" }} name="status">
                 {listStatus.map((item) => {
                   return <Option value={item}>{item}</Option>;
                 })}
               </Select>
             </div>
             <div>
-              <label style={{fontWeight: 600}}> ASSIGNEE</label>
-              <Select style={{ width: 150, display: 'block' }} defaultValue="Backlog">
+              <label style={{ fontWeight: 600 }}> ASSIGNEE</label>
+              {/* <Select
+                style={{ width: 150, display: "block" }}
+                name='assignee'
+              >
+                <Option></Option>>
+              </Select> */}
+            </div>
+            <div>
+              <label style={{ fontWeight: 600 }}> REPORTER</label>
+              <Select style={{ width: 150, display: "block" }} name="reporter">
                 {listStatus.map((item) => {
                   return <Option value={item}>{item}</Option>;
                 })}
               </Select>
             </div>
             <div>
-              <label style={{fontWeight: 600}}> REPORTER</label>
-              <Select style={{ width: 150, display: 'block' }} defaultValue="Backlog">
-                {listStatus.map((item) => {
-                  return <Option value={item}>{item}</Option>;
-                })}
+              <label style={{ fontWeight: 600 }}> PRIORITY</label>
+              <Select style={{ width: 150, display: "block" }} name="priority">
+                <Option value="High">High</Option>
+                <Option value="Medium">Medium</Option>
+                <Option value="Low">Low</Option>
               </Select>
             </div>
+            <div
+              style={{
+                marginTop: 11,
+                paddingTop: 13,
+                lineHeight: 22,
+                borderTop: "1px solid rgb(223, 225, 230)",
+                color: 'rgb(94, 108, 132)',
+                fontSize: 13,
+              }}
+            ></div>
+            <div style={{ color: "#929398" }}>Create at a month ago</div>
+            <div style={{ color: "#929398" }}>Update at a few seconds ago</div>
           </Col>
         </Row>
       </Form>

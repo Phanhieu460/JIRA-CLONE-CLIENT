@@ -11,7 +11,7 @@ const Header = (props) => {
     imgUrl: "",
   };
   if (localStorage.getItem("user")) {
-    userLogin = { ...JSON.parse(localStorage.getItem("user")).user };
+    userLogin = { ...JSON.parse(localStorage.getItem("user"))};
   }
 
   // const dispatch = useDispatch();

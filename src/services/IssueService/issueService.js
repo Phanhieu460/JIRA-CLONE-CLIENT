@@ -2,7 +2,7 @@ import axios from "axios"
 const id_token = localStorage.getItem('token');
 
 const API_URL = 'http://localhost:1337'
-export const taskService = {
+export const issueService = {
     createTask: (newIssue) => {
         return axios({
             url: `${API_URL}/issues`,
