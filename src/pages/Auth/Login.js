@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Checkbox, notification } from "antd";
 import styled from "styled-components";
-import {NavLink, useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login, reset } from "../../features/Auth/authSlice";
 import { useSelector } from "react-redux";
@@ -22,12 +22,12 @@ const Login = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (isError) {
-      openNotification('error', 'Error', message)
+      openNotification("error", "Error", message);
     }
 
     if (isSuccess) {
-      openNotification('success', 'Success', message)
-      history.push('/board')
+      openNotification("success", "Success", message);
+      history.push("/board");
     }
 
     dispatch(reset());
@@ -39,7 +39,7 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   };
-  
+
   const onFinish = (e) => {
     const userData = {
       email,
@@ -52,9 +52,9 @@ const Login = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-if (isLoading) {
-  <Spinner/>
-}
+  if (isLoading) {
+    <Spinner />;
+  }
   return (
     <StyledContainer className="login-page">
       <StyledForm
@@ -98,6 +98,15 @@ if (isLoading) {
           <StyledButton type="primary" htmlType="submit">
             Login
           </StyledButton>
+          <StyledButtonGoogle type="default" htmlType="submit">
+            <img
+              style={{ height: 18, width: 18 }}
+              src="https://aid-frontend.prod.atl-paas.net/atlassian-id/front-end/5.0.347/static/media/google-logo.e086107b.svg"
+              alt="google"
+            />
+
+            <span>Login With Google</span>
+          </StyledButtonGoogle>
           <div>
             Not Register ? <NavLink to="/register">Create an account!</NavLink>
           </div>
@@ -166,5 +175,37 @@ const StyledForm = styled(Form)`
 `;
 
 const StyledButton = styled(Button)`
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: inherit;
+  font-style: normal;
+  font-family: inherit;
   width: 100%;
+  display: inline-flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-weight: bold;
+  color: #fff !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  background: #0052cc !important;
+  box-shadow: rgb(0 0 0 / 20%) 1px 1px 5px 0px !important;
+`;
+const StyledButtonGoogle = styled(Button)`
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: inherit;
+  font-style: normal;
+  font-family: inherit;
+  width: 100%;
+  margin-top: 10px;
+  display: inline-flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-weight: bold;
+  color: #42526e !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  background: rgb(255, 255, 255) !important;
+  box-shadow: rgb(0 0 0 / 20%) 1px 1px 5px 0px !important;
 `;

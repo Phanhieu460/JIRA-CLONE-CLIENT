@@ -43,13 +43,8 @@ export const getIssues = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.accessToken;
-      const response = await issueService.getIssues(token);
-      if (response.success) {
-        openNotification("success", "Success", response.message);
-        return response;
-      } else {
-        openNotification("error", "Error", response.message);
-      }
+      return await issueService.getIssues(token);
+      
     } catch (error) {
       const message =
         (error.response &&
@@ -125,9 +120,10 @@ export const issueSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteIssue.fulfilled, (state, action) => {
+        console.log('slice', state.issues);
         state.isLoading = false;
         state.isSuccess = true;
-        state.issues = state.issues.filter(
+        state.issues = [state.issues].filter(
           (issue) => issue._id !== action.payload.id
         );
       })

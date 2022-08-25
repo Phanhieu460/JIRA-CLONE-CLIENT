@@ -12,9 +12,9 @@ const ProjectSettings = () => {
   const {projects} = useSelector(state =>state.project)
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getProject)
+    dispatch(getProject())
   }, [dispatch])
-  
+  console.log(projects);
   return (
     <>
       <Form

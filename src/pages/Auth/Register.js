@@ -1,66 +1,67 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Checkbox, notification } from "antd";
 import styled from "styled-components";
-import {NavLink, useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { register, reset } from "../../features/Auth/authSlice";
 import { openNotification } from "../../util/notification";
 import Spinner from "../../components/templates/Spinner/Spinner";
 
-
 const Register = () => {
-    const [dataRegister, setDataRegister] = useState({
-        email: '',
-        password: '',
-        password2: ''
-    })
-    const {email, password, password2} = dataRegister
-    const history = useHistory()
-    const dispatch = useDispatch()
-  
-    const { user, isLoading, isError, isSuccess, message } = useSelector(
-      (state) => state.auth
-    )
-  
-    useEffect(() => {
-      if (isError) {
-        openNotification('error', 'Error', message)
-      }
-  
-      if (isSuccess) {
-        openNotification('success', 'Success', message)
-        history.push('/board')
-      }
-  
-      dispatch(reset())
-    }, [isSuccess, isError])
+  const [dataRegister, setDataRegister] = useState({
+    email: "",
+    password: "",
+    password2: "",
+  });
+  const { email, password, password2 } = dataRegister;
+  const history = useHistory();
+  const dispatch = useDispatch();
 
-    const handleChange = (e) => {
-        setDataRegister({
-            ...dataRegister,
-            [e.target.name]: e.target.value
-        })
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      openNotification("error", "Error", message);
     }
+
+    if (isSuccess) {
+      history.push("/board");
+    }
+
+    dispatch(reset());
+  }, [isSuccess, isError]);
+
+  const handleChange = (e) => {
+    setDataRegister({
+      ...dataRegister,
+      [e.target.name]: e.target.value,
+    });
+  };
   const onFinish = (e) => {
     if (password !== password2) {
-      notification.error({description:'Passwords do not match', message: 'Notification'})
+      notification.error({
+        description: "Passwords do not match",
+        message: "Notification",
+      });
     } else {
       const userData = {
         email,
         password,
-      }
+      };
 
-      dispatch(register(userData))
+      dispatch(register(userData));
     }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-if (isLoading) {
-  <Spinner/>
-}
+  if (isLoading) {
+    <Spinner />;
+  }
   return (
     <StyledContainer>
       <StyledForm
@@ -75,20 +76,35 @@ if (isLoading) {
           name="email"
           rules={[{ required: true, message: "Please input your email!" }]}
         >
-          <Input placeholder="Enter your email address" name='email' value={email} onChange={handleChange} />
+          <Input
+            placeholder="Enter your email address"
+            name="email"
+            value={email}
+            onChange={handleChange}
+          />
         </Form.Item>
 
         <Form.Item
           name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input.Password placeholder="Enter password" name='password' value={password} onChange={handleChange} />
+          <Input.Password
+            placeholder="Enter password"
+            name="password"
+            value={password}
+            onChange={handleChange}
+          />
         </Form.Item>
         <Form.Item
           name="password2"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input.Password placeholder="Enter the password" name='password2' value={password2} onChange={handleChange}/>
+          <Input.Password
+            placeholder="Enter the password"
+            name="password2"
+            value={password2}
+            onChange={handleChange}
+          />
         </Form.Item>
 
         <Form.Item name="remember" valuePropName="checked">
@@ -99,6 +115,15 @@ if (isLoading) {
           <StyledButton type="primary" htmlType="submit">
             Register
           </StyledButton>
+          <StyledButtonGoogle type="default" htmlType="submit">
+            <img
+              style={{ height: 18, width: 18 }}
+              src="https://aid-frontend.prod.atl-paas.net/atlassian-id/front-end/5.0.347/static/media/google-logo.e086107b.svg"
+              alt="google"
+            />
+
+            <span>Login With Google</span>
+          </StyledButtonGoogle>
           <div>
             Do you already have an account ?{" "}
             <NavLink to="/login">Log In</NavLink>
@@ -164,5 +189,37 @@ const StyledForm = styled(Form)`
 `;
 
 const StyledButton = styled(Button)`
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: inherit;
+  font-style: normal;
+  font-family: inherit;
   width: 100%;
+  display: inline-flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-weight: bold;
+  color: #fff !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  background: #0052cc !important;
+  box-shadow: rgb(0 0 0 / 20%) 1px 1px 5px 0px !important;
+`;
+const StyledButtonGoogle = styled(Button)`
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: inherit;
+  font-style: normal;
+  font-family: inherit;
+  width: 100%;
+  margin-top: 10px;
+  display: inline-flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-weight: bold;
+  color: #42526e !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  background: rgb(255, 255, 255) !important;
+  box-shadow: rgb(0 0 0 / 20%) 1px 1px 5px 0px !important;
 `;

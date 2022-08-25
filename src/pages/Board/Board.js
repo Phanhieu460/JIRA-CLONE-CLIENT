@@ -1,39 +1,48 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { CheckSquareOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import {
+  CheckSquareTwoTone,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  TagTwoTone ,
+} from "@ant-design/icons";
 import { Card, Row, Col } from "antd";
 import ViewDetailIssue from "../Modal/ViewDetailIssue";
 import { useSelector } from "react-redux";
 import { getIssues, reset } from "../../features/Issue/issueSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-
+import { openNotification } from "../../util/notification";
 
 const Board = () => {
   const [isOpenModals, setIsOpenModals] = useState(false);
-  const { user } = useSelector((state) => state.auth)
-  const {issues, isLoading,isError, message} = useSelector(state => state.issues)
-  const dispatch = useDispatch()
-  const history = useHistory()
-  
+  const { user } = useSelector((state) => state.auth);
+  const [projectId, setProjectId] = useState('')
+  const { issues, isLoading, isError, message } = useSelector(
+    (state) => state.issues
+  );
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   useEffect(() => {
     if (isError) {
-      console.log(message)
+      openNotification('error', 'Error', message)
     }
 
     if (!user) {
-      history.push('/login')
+      history.push("/login");
     }
 
-    dispatch(getIssues())
+    dispatch(getIssues());
 
     return () => {
-      dispatch(reset())
-    }
-  }, [dispatch])
+      dispatch(reset());
+    };
+  }, [dispatch]);
 
-  const handleClick = () => {
+  const handleClick = (item) => {
     setIsOpenModals(true);
+    setProjectId(item)
   };
   const handleOk = () => {
     setIsOpenModals(false);
@@ -43,32 +52,33 @@ const Board = () => {
     setIsOpenModals(false);
   };
   const tasks = [
-    {
-      name: "BACKLOG 1",
-      items: [
-        {
-          title: "dsdsdsdsds",
-        },
-      ],
-    },
-    {
-      name: "SELECTED FOR DEVELOPMENT 2",
-    },
-    {
-      name: "INPROGESS 1",
-    },
-    {
-      name: "DONE 1",
-    },
+    {name: "BACKLOG 1"},
+    { name: "SELECTED FOR DEVELOPMENT 2"},
+    {name: "INPROGESS 1",},
+    {name: "DONE 1"},
   ];
+  const priority = {
+    High: <ArrowUpOutlined style={{ color: "rgb(205, 19, 23)" }} />,
+    Medium: <ArrowUpOutlined style={{ color: "rgb(233, 127, 51)" }} />,
+    Low: <ArrowDownOutlined style={{ color: "rgb(45, 135, 56)" }} />,
+  };
+  const issueType = {
+    Task: (
+      <CheckSquareTwoTone 
+        style={{ paddingRight: 5 }}
+      />
+    ),
+    Epic: (
+      <TagTwoTone twoToneColor={"rgb(101, 186, 67)"}  style={{ paddingRight: 5 }} />
+    ),
+  };
+
   const renderIssue = () => {
     return (
       <>
         {tasks?.map((task, index) => {
           return (
-            <Row
-              gutter={16}
-            >
+            <Row gutter={16}>
               <Col span={4}>
                 <StyledCard
                   key={index}
@@ -81,9 +91,11 @@ const Board = () => {
                   }}
                 >
                   {issues.allIssue?.map((item) => {
+                    
                     return (
+                      <>
                       <div
-                        onClick={handleClick}
+                        onClick={()=> handleClick(item)}
                         style={{
                           marginBottom: 10,
                           padding: 10,
@@ -102,13 +114,8 @@ const Board = () => {
                           }}
                         >
                           <div>
-                            <CheckSquareOutlined
-                              style={{
-                                color: "rgb(79, 173, 230)",
-                                paddingRight: 5,
-                              }}
-                            />
-                            <span>{item.id}</span>
+                            <span>{issueType[item.issueType]}</span>
+                            <span>{priority[item.priority]}</span>
                           </div>
                           <div>
                             <img
@@ -123,6 +130,7 @@ const Board = () => {
                           </div>
                         </div>
                       </div>
+                      </>
                     );
                   })}
                 </StyledCard>
@@ -130,6 +138,7 @@ const Board = () => {
             </Row>
           );
         })}
+        
       </>
     );
   };
@@ -145,6 +154,7 @@ const Board = () => {
       </div>
       <div style={{ display: "flex", marginTop: 20 }}>{renderIssue()}</div>
       <ViewDetailIssue
+        issue ={projectId}
         visible={isOpenModals}
         handleOk={handleOk}
         handleCancel={handleCancel}
