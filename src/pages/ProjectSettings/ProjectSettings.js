@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Button, Input, Select } from "antd";
 import 'antd/dist/antd.min.css';
 import {Editor} from '@tinymce/tinymce-react'
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getProject } from "../../features/Project/projectSlice";
 
 const { Option } = Select;
 
 const ProjectSettings = () => {
+  const {projects} = useSelector(state =>state.project)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getProject)
+  }, [dispatch])
+  
   return (
     <>
       <Form

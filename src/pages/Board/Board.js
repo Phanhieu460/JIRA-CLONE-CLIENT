@@ -1,11 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CheckSquareOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { Card, Row, Col } from "antd";
 import ViewDetailIssue from "../Modal/ViewDetailIssue";
+import { useSelector } from "react-redux";
+import { getIssues, reset } from "../../features/Issue/issueSlice";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+
 
 const Board = () => {
   const [isOpenModals, setIsOpenModals] = useState(false);
+  const { user } = useSelector((state) => state.auth)
+  const {issues, isLoading,isError, message} = useSelector(state => state.issues)
+  const dispatch = useDispatch()
+  const history = useHistory()
+  
+  useEffect(() => {
+    if (isError) {
+      console.log(message)
+    }
+
+    if (!user) {
+      history.push('/login')
+    }
+
+    dispatch(getIssues())
+
+    return () => {
+      dispatch(reset())
+    }
+  }, [dispatch])
+
   const handleClick = () => {
     setIsOpenModals(true);
   };
@@ -35,7 +61,6 @@ const Board = () => {
       name: "DONE 1",
     },
   ];
-
   const renderIssue = () => {
     return (
       <>
@@ -55,11 +80,12 @@ const Board = () => {
                     background: "rgb(244, 245, 247)",
                   }}
                 >
-                  {task?.items?.map((item) => {
+                  {issues.allIssue?.map((item) => {
                     return (
                       <div
                         onClick={handleClick}
                         style={{
+                          marginBottom: 10,
                           padding: 10,
                           borderRadius: 3,
                           background: "rgb(255,255,255)",
@@ -82,7 +108,7 @@ const Board = () => {
                                 paddingRight: 5,
                               }}
                             />
-                            <span>Id Issue</span>
+                            <span>{item.id}</span>
                           </div>
                           <div>
                             <img

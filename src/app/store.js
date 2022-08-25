@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import issueReducer from "../features/issueSlice";
-import userReducer from '../features/userSlice'
-
-
+import authSlice from "../features/Auth/authSlice";
+import issueSlice from "../features/Issue/issueSlice";
+import projectSlice from "../features/Project/projectSlice";
 
 export default configureStore({
     reducer: {
-        user: userReducer,
-        issue: issueReducer
+        auth: authSlice,
+        issues: issueSlice,
+        project: projectSlice
     }
 })

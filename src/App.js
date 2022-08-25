@@ -3,13 +3,14 @@ import Board from "./pages/Board/Board";
 import ProjectSettings from "./pages/ProjectSettings/ProjectSettings";
 import JiraTemplate from "./components/templates/JiraTemplate";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
 import { withRouter } from "react-router";
-import Auth from "./views/Auth";
-import AuthContextProvider from "./context/AuthContext";
+
 
 function App() {
   return (
-    <AuthContextProvider>
+
       <Router>
         <Switch>
           <JiraTemplate
@@ -27,17 +28,17 @@ function App() {
           <Route
             path="/login"
             exact
-            render={(props) => <Auth {...props} authRoute="login" />}
+            component={Login}
           />
           <Route
             path="/register"
             exact
-            render={(props) => <Auth {...props} authRoute="register" />}
+            component={Register}
           />
-          <Route path="/" exact render={(props) => <Auth {...props} authRoute="login" />}/>
+          <Route path="/" exact component={Login}/>
         </Switch>
       </Router>
-    </AuthContextProvider>
+
   );
 }
 

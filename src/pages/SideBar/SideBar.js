@@ -1,30 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import CreateIssue from "../Modal/CreateIssue";
 import { Tooltip } from "antd";
 import SearchIssue from "../Modal/SearchIssue";
-import ViewDetailIssue from "../Modal/ViewDetailIssue";
-import { Redirect } from "react-router-dom";
+
+
 
 const SideBar = () => {
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [isOpenDrawer, setIsOpenDrawer] = useState(false)
-  const handleClick = () => {
-    setIsOpenModal(true);
-  };
-  const handleOk = () => {
-    setIsOpenModal(false);
-  };
-
-  const handleCancel = () => {
-    setIsOpenModal(false);
-  };
-  const handleOpenDrawer = () => {
-    setIsOpenDrawer(true)
-  }
-  const handleCloseDrawer = () => {
-    setIsOpenDrawer(false)
-  }
   const text = (
     <>
       <div style={{ padding: "24px 56px 20px" }}>
@@ -60,7 +42,7 @@ const SideBar = () => {
           border: "none",
           padding: "0px 12px",
           marginLeft: "5px",
-          cursor: "pointer"
+          cursor: "pointer",
         }}
       >
         Github Repo
@@ -74,12 +56,14 @@ const SideBar = () => {
           <div>
             <i className="fa-brands fa-jira"></i>
           </div>
-          <div onClick={handleOpenDrawer}>
+          {/* <div onClick={handleOpenDrawer}>
             <i className="fa-solid fa-magnifying-glass"></i>
-          </div>
-          <div onClick={handleClick}>
+          </div> */}
+          {/* <div onClick={handleClick}>
             <i className="fa-solid fa-plus"></i>
-          </div>
+          </div> */}
+          <SearchIssue />
+          <CreateIssue />
           <div>
             <Tooltip placement="rightTop" title={text}>
               <button
@@ -91,12 +75,6 @@ const SideBar = () => {
           </div>
         </div>
       </StyledSideBar>
-      <CreateIssue
-        visible={isOpenModal}
-        handleOk={handleOk}
-        handleCancel={handleCancel}
-      />
-      <SearchIssue visible={isOpenDrawer} onClose={handleCloseDrawer}/>
     </>
   );
 };

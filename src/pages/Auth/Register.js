@@ -1,7 +1,12 @@
-import React, {useState} from "react";
-import { Button, Form, Input, Checkbox } from "antd";
+import React, {useState, useEffect} from "react";
+import { Button, Form, Input, Checkbox, notification } from "antd";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import {NavLink, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { register, reset } from "../../features/Auth/authSlice";
+import { openNotification } from "../../util/notification";
+import Spinner from "../../components/templates/Spinner/Spinner";
 
 
 const Register = () => {
@@ -11,22 +16,51 @@ const Register = () => {
         password2: ''
     })
     const {email, password, password2} = dataRegister
-
+    const history = useHistory()
+    const dispatch = useDispatch()
+  
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+      (state) => state.auth
+    )
+  
+    useEffect(() => {
+      if (isError) {
+        openNotification('error', 'Error', message)
+      }
+  
+      if (isSuccess) {
+        openNotification('success', 'Success', message)
+        history.push('/board')
+      }
+  
+      dispatch(reset())
+    }, [isSuccess, isError])
 
     const handleChange = (e) => {
         setDataRegister({
             ...dataRegister,
-            [e.target.name]: [e.target.value]
+            [e.target.name]: e.target.value
         })
     }
   const onFinish = (e) => {
-    console.log("Success:", dataRegister);
+    if (password !== password2) {
+      notification.error({description:'Passwords do not match', message: 'Notification'})
+    } else {
+      const userData = {
+        email,
+        password,
+      }
+
+      dispatch(register(userData))
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
+if (isLoading) {
+  <Spinner/>
+}
   return (
     <StyledContainer>
       <StyledForm

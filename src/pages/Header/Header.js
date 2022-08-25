@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Breadcrumb, Dropdown, Avatar, Menu, Button, Popover } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { NavLink, useHistory } from "react-router-dom";
+import {  useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { logout, reset } from "../../features/Auth/authSlice";
 
 const Header = (props) => {
   let userLogin = {
@@ -11,14 +12,16 @@ const Header = (props) => {
     imgUrl: "",
   };
   if (localStorage.getItem("user")) {
-    userLogin = { ...JSON.parse(localStorage.getItem("user"))};
+    userLogin = JSON.parse(localStorage.getItem('user'))
   }
 
-  // const dispatch = useDispatch();
-  // const history = useHistory();
-  // const handleClick = () => {
-  //   dispatch(logout());
-  // };
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const handleClick = () => {
+    dispatch(logout());
+    dispatch(reset())
+    history.push('login')
+  };
 
   const content = (
     <Menu className="test">
@@ -28,20 +31,18 @@ const Header = (props) => {
           </NavLink>
       </Menu.Item> */}
 
-      <Menu.Item key="2">
-        <NavLink to="/login">
-          <div>
+      <Menu.Item key="2"  >
+          <div onClick={handleClick}>
             <i className="fa fa-sign-out-alt"></i>
             <span className="ml-2 pl-1">Logout</span>
           </div>
-        </NavLink>
       </Menu.Item>
     </Menu>
   );
   const title = (
     <div>
       <span style={{fontSize: 14, display: 'block'}}>Signed in as</span>
-      <strong>{userLogin.fullName}</strong>
+      <strong>{userLogin.newUser ? userLogin?.newUser?.fullName : userLogin.fullName}</strong>
     </div>
   );
   return (
@@ -66,11 +67,11 @@ const Header = (props) => {
           placement="bottomRight"
           trigger="click"
         >
-          {userLogin.imgUrl === "" || userLogin.imgUrl === null ? (
+          {userLogin?.newUser?.imgUrl === "" || userLogin?.newUser?.imgUrl === null ? (
             <Avatar icon={<i className="fa fa-user-alt"></i>} />
           ) : (
             <Avatar
-              src={userLogin.imgUrl}
+              src={userLogin?.newUser?.imgUrl}
               style={{ width: 40, height: 40, cursor: "pointer" }}
             />
           )}

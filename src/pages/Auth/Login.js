@@ -1,16 +1,37 @@
-import React, { useContext, useState } from "react";
-import { Button, Form, Input, Checkbox } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Checkbox, notification } from "antd";
 import styled from "styled-components";
-import { NavLink, useHistory } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import {NavLink, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login, reset } from "../../features/Auth/authSlice";
+import { useSelector } from "react-redux";
+import { openNotification } from "../../util/notification";
+import Spinner from "../../components/templates/Spinner/Spinner";
 
 const Login = () => {
-  const { loginUser } = useContext(AuthContext);
   const [dataLogin, setDataLogin] = useState({
     email: "",
     password: "",
   });
   const { email, password } = dataLogin;
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+  const history = useHistory();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (isError) {
+      openNotification('error', 'Error', message)
+    }
+
+    if (isSuccess) {
+      openNotification('success', 'Success', message)
+      history.push('/board')
+    }
+
+    dispatch(reset());
+  }, [isSuccess, isError]);
 
   const handleChange = (e) => {
     setDataLogin({
@@ -18,26 +39,22 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const history = useHistory();
-  const onFinish = async (e) => {
-    try {
-      const userLogin = {
-        email,
-        password,
-      };
-      const loginData = await loginUser(userLogin);
-      if (loginData.success) {
-        history.push("/board");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  
+  const onFinish = (e) => {
+    const userData = {
+      email,
+      password,
+    };
+
+    dispatch(login(userData));
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
+if (isLoading) {
+  <Spinner/>
+}
   return (
     <StyledContainer className="login-page">
       <StyledForm

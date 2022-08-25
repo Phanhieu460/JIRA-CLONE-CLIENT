@@ -1,25 +1,30 @@
 import { Drawer, Input } from 'antd'
 import styled  from 'styled-components'
 import { SearchOutlined } from '@ant-design/icons'
-import React from 'react'
+import React, {useState} from 'react'
 
-const SearchIssue = (props) => {
+const SearchIssue = () => {
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false)
   const search = <StyledContainer>
   <SearchOutlined />
     <StyledInput placeholder='Search issue by summary, description ...'/>
   </StyledContainer>
-  return (
+  return (<>
+  <div onClick={() => setIsOpenDrawer(true)}>
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </div>
     <Drawer
         title={search}
         placement='left'
         closable={false}
-        onClose={props.onClose}
-        visible={props.visible}
+        onClose={() => setIsOpenDrawer(false)}
+        visible={isOpenDrawer}
       >
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p>
       </Drawer>
+  </>
   )
 }
 

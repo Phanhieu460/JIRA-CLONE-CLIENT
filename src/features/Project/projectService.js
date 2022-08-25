@@ -1,0 +1,39 @@
+import axios from  'axios'
+
+const API_URL = 'http://localhost:1337'
+
+const createProject = async (projectData, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.post(`${API_URL}/projects`, projectData, config)
+    return response.data
+
+}
+const getProject = async (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(`${API_URL}/projects`, config)
+    return response.data
+}
+const getProjectById = async (id,token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(`${API_URL}/projects/${id}`, config)
+    return response.data
+}
+
+const  projectService= {
+    createProject,
+    getProject,
+    getProjectById
+}
+export default projectService
