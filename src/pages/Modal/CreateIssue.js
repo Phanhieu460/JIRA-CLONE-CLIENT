@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Button, Input, Select, Col, Row } from "antd";
+import { Modal, Form, Button, Input, Select, Col, Row, Avatar } from "antd";
 import "antd/dist/antd.min.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { useDispatch } from "react-redux";
@@ -9,58 +9,63 @@ import { getProject, reset } from "../../features/Project/projectSlice";
 
 import { openNotification } from "../../util/notification";
 import { useHistory } from "react-router-dom";
+import { getAllUser } from "../../features/Auth/authSlice";
 
 const { Option } = Select;
 
 const CreateIssue = () => {
-  const dispatch = useDispatch()
-  const history = useHistory()
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  const {user} =useSelector(state => state.auth)
-  const {projects, isSuccess, isError, message} = useSelector(state => state.project)
+  const { user } = useSelector((state) => state.auth);
+  const { projects, isSuccess, isError, message } = useSelector(
+    (state) => state.project
+  );
 
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [title, setTitle] = useState('')
-  const [status, setStatus] = useState('')
-  const [project, setProject] = useState('')
-  const [issueType, setIssueType] = useState('')
-  const [reporter, setReporter] = useState('')
-  const [priority, setPriority] = useState('')
-  const [assignee, setAssignee] = useState('')
-  const [description, setDescription] = useState('')
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState("");
+  const [project, setProject] = useState("");
+  const [issueType, setIssueType] = useState("");
+  const [reporter, setReporter] = useState("");
+  const [priority, setPriority] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [description, setDescription] = useState("");
 
-useEffect(() => {
-  if (isError) {
-    openNotification('error', 'Error', message)
-  }
+  useEffect(() => {
+    if (isError) {
+      openNotification("error", "Error", message);
+    }
 
-  if (!user) {
-    history.push('/login')
-  }
+    if (!user) {
+      history.push("/login");
+    }
 
-  dispatch(getProject())
-
-  return () => {
-    dispatch(reset())
-  }
-}, [dispatch])
-const [form] = Form.useForm();
+    dispatch(getProject());
+    dispatch(getAllUser());
+    return () => {
+      dispatch(reset());
+    };
+  }, [user, projects]);
+  const [form] = Form.useForm();
   const handleClick = (e) => {
     const data = {
       project,
       issueType,
       title,
-      assignee, reporter,
+      assignee,
+      reporter,
       status,
       priority,
-      description
-    }
-    dispatch(createIssue(data))
+      description,
+    };
+    dispatch(createIssue(data));
     setIsOpenModal(false);
-    setTitle('')
-    setIssueType('')
-    form.resetFields()
+    setTitle("");
+    setIssueType("");
+    form.resetFields();
   };
+
   return (
     <>
       <div onClick={() => setIsOpenModal(true)}>
@@ -71,11 +76,11 @@ const [form] = Form.useForm();
         width={700}
         title="Create Issue"
         visible={isOpenModal}
-        onCancel = {() => setIsOpenModal(false)}
+        onCancel={() => setIsOpenModal(false)}
         footer={false}
       >
         <Form
-        form={form}
+          form={form}
           name="basic"
           labelCol={{
             span: 24,
@@ -89,24 +94,32 @@ const [form] = Form.useForm();
           autoComplete="off"
         >
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          <Col span={12}>
-            <Form.Item
-              label="Project"
-              name="project"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Select placeholder='Select Project' value={project} onChange={(e) => setProject(e)}>
-                {projects?.allProject?.map(item => {
-                  return <Option value={item.name} key={item.id}>{item.name}</Option>
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
+            <Col span={12}>
+              <Form.Item
+                label="Project"
+                name="project"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Select Project"
+                  value={project}
+                  onChange={(e) => setProject(e)}
+                >
+                  {projects?.allProject?.map((item) => {
+                    return (
+                      <Option value={item.id} key={item.id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col span={12}>
               <Form.Item
@@ -140,16 +153,26 @@ const [form] = Form.useForm();
                 name="title"
                 rules={[{ required: true }]}
               >
-                <Input name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <Input
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col span={12}>
               <Form.Item label="Status" name="status">
-                <Select placeholder="Select status" value={status} onChange={(e) => setStatus(e)}>
+                <Select
+                  placeholder="Select status"
+                  value={status}
+                  onChange={(e) => setStatus(e)}
+                >
                   <Option value="BACKLOG">BACKLOG</Option>
-                  <Option value="SELECTED FOR DEVELOPMENT">SELECTED FOR DEVELOPMENT</Option>
+                  <Option value="SELECTED FOR DEVELOPMENT">
+                    SELECTED FOR DEVELOPMENT
+                  </Option>
                   <Option value="IN PROGRESS">IN PROGRESS</Option>
                   <Option value="DONE">DONE</Option>
                 </Select>
@@ -157,7 +180,12 @@ const [form] = Form.useForm();
             </Col>
             <Col span={12}>
               <Form.Item label="Priority" name="priority">
-                <Select placeholder='Select priority' name="priority" value={priority} onChange={(e) => setPriority(e)}>
+                <Select
+                  placeholder="Select priority"
+                  name="priority"
+                  value={priority}
+                  onChange={(e) => setPriority(e)}
+                >
                   <Option value="High">High</Option>
                   <Option value="Medium">Medium</Option>
                   <Option value="Low">Low</Option>
@@ -187,8 +215,8 @@ const [form] = Form.useForm();
                       "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                   }}
                   value={description}
-                  onEditorChange={(content)=>{
-                    setDescription(content)
+                  onEditorChange={(content) => {
+                    setDescription(content);
                   }}
                 />
               </Form.Item>
@@ -197,25 +225,73 @@ const [form] = Form.useForm();
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col span={12}>
               <Form.Item label="Assignee" name="assignee">
-                <Select placeholder="Select assignee" value={assignee} onChange={(e) => setAssignee(e)}>
-                  <Option value="human1">Human 1</Option>
-                  <Option value="human2">human 2</Option>
+                <Select
+                  placeholder="Select assignee"
+                  value={assignee}
+                  onChange={(e) => {
+                    console.log(e)
+                    setAssignee(e)}}
+                >
+                  {user?.user?.map((item) => {
+                    return (
+                      <Option
+                        value={item.fullName}
+                        key={item.id}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <Avatar
+                          src={item.imgUrl}
+                          style={{
+                            width: 20,
+                            height: 20,
+                            marginRight: 5,
+                            cursor: "pointer",
+                          }}
+                        />
+                        {item.fullName}
+                      </Option>
+                    );
+                  })}
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                label="Reporter"
-                name="reporter"
-              >
-                <Select placeholder="Select reporter" value={reporter} onChange={(e) => setReporter(e)}>
-                  <Option value="human1">Human 1</Option>
-                  <Option value="human2">human 2</Option>
+              <Form.Item label="Reporter" name="reporter">
+                <Select
+                  placeholder="Select reporter"
+                  value={reporter}
+                  onChange={(e) => setReporter(e)}
+                >
+                  {user?.user?.map((item) => {
+                    return (
+                      <Option
+                        value={item.fullName}
+                        key={item.id}
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <Avatar
+                          src={item.imgUrl}
+                          style={{
+                            width: 20,
+                            height: 20,
+                            marginRight: 5,
+                            cursor: "pointer",
+                          }}
+                        />
+                        {item.fullName}
+                      </Option>
+                    );
+                  })}
                 </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Button key="submit" type="primary"  disabled={title && issueType ? false : true} onClick={handleClick}>
+          <Button
+            key="submit"
+            type="primary"
+            disabled={title && issueType ? false : true}
+            onClick={handleClick}
+          >
             Create Issue
           </Button>
           ,

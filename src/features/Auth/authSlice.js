@@ -12,7 +12,35 @@ const initialState = {
   isLoading: false,
   message: '',
 }
-
+export const getAllUser = createAsyncThunk('auth/user', async (_, thunkAPI) => {
+  try {
+    const response = await authService.getAll()
+    return response
+  } catch (error) {
+    const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+  }
+})
+//Get User By Id
+export const getUserById = createAsyncThunk('auth/userId', async (userId, thunkAPI) => {
+  try {
+    const response = await authService.getUserById(userId)
+    return response
+  } catch (error) {
+    const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+  }
+})
 // Register user
 export const register = createAsyncThunk(
   'auth/register',
@@ -92,7 +120,6 @@ export const authSlice = createSlice({
         state.isLoading = true
       })
       .addCase(login.fulfilled, (state, action) => {
-        console.log('action',action.payload);
         state.isLoading = false
         state.isSuccess = true
         state.user = action.payload
@@ -114,6 +141,34 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.isError = true
         state.message = action.payload
+        state.user = null
+      })
+      .addCase(getAllUser.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getAllUser.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.user = action.payload
+        state.message = action.payload.message
+      })
+      .addCase(getAllUser.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.user = null
+      })
+      .addCase(getUserById.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getUserById.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.user = action.payload
+        state.message = action.payload.message
+      })
+      .addCase(getUserById.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
         state.user = null
       })
   },

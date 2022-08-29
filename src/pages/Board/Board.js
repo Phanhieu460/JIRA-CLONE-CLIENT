@@ -9,21 +9,24 @@ import {
 import { Card, Row, Col } from "antd";
 import ViewDetailIssue from "../Modal/ViewDetailIssue";
 import { useSelector } from "react-redux";
-import { getIssues, reset } from "../../features/Issue/issueSlice";
+import { getIssues, reset, searchIssue } from "../../features/Issue/issueSlice";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Route, useHistory, useParams } from "react-router-dom";
 import { openNotification } from "../../util/notification";
+import { getProjectById } from "../../features/Project/projectSlice";
 
 const Board = () => {
+  const params = useParams()
   const [isOpenModals, setIsOpenModals] = useState(false);
   const { user } = useSelector((state) => state.auth);
-  const [projectId, setProjectId] = useState('')
-  const { issues, isLoading, isError, message } = useSelector(
+  const [issue, setIssue] = useState('')
+  const [search, setSearch] = useState('')
+  const { issues, isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.issues
   );
+  const {projects} = useSelector(state=> state.project)
   const dispatch = useDispatch();
   const history = useHistory();
-
   useEffect(() => {
     if (isError) {
       openNotification('error', 'Error', message)
@@ -33,16 +36,16 @@ const Board = () => {
       history.push("/login");
     }
 
-    dispatch(getIssues());
+    dispatch(getIssues(params.id));
 
     return () => {
       dispatch(reset());
     };
-  }, [dispatch]);
-
+  }, [issues]);
+  
   const handleClick = (item) => {
     setIsOpenModals(true);
-    setProjectId(item)
+    setIssue(item)
   };
   const handleOk = () => {
     setIsOpenModals(false);
@@ -52,10 +55,10 @@ const Board = () => {
     setIsOpenModals(false);
   };
   const tasks = [
-    {name: "BACKLOG 1"},
-    { name: "SELECTED FOR DEVELOPMENT 2"},
-    {name: "INPROGESS 1",},
-    {name: "DONE 1"},
+    {name: "BACKLOG 1", value: 'BACKLOG'},
+    { name: "SELECTED FOR DEVELOPMENT 2", value:"SELECTED FOR DEVELOPMENT"},
+    {name: "INPROGESS 1", value:"IN PROGRESS"},
+    {name: "DONE 1", value: "DONE"},
   ];
   const priority = {
     High: <ArrowUpOutlined style={{ color: "rgb(205, 19, 23)" }} />,
@@ -73,6 +76,9 @@ const Board = () => {
     ),
   };
 
+  const handleSearch = () => {
+    dispatch(searchIssue(search))
+  }
   const renderIssue = () => {
     return (
       <>
@@ -90,11 +96,11 @@ const Board = () => {
                     background: "rgb(244, 245, 247)",
                   }}
                 >
-                  {issues.allIssue?.map((item) => {
+                  {issues?.allIssue?.map((item) => {
                     
                     return (
-                      <>
                       <div
+                      key={item.status===task.value}
                         onClick={()=> handleClick(item)}
                         style={{
                           marginBottom: 10,
@@ -130,7 +136,6 @@ const Board = () => {
                           </div>
                         </div>
                       </div>
-                      </>
                     );
                   })}
                 </StyledCard>
@@ -142,23 +147,27 @@ const Board = () => {
       </>
     );
   };
+  
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <StyledSearch className="search">
-          <input className="search mt-1" />
-          <i className="fa fa-search mt-2" />
+        <StyledSearch className="search" >
+          <input className="search mt-1" name="search" value={search} onChange={(e) => setSearch(e.target.value)}  />
+          <i className="fa fa-search mt-2" onClick={handleSearch} />
         </StyledSearch>
         <StyledButon>Only My Issues</StyledButon>
         <StyledButon>Recently Updated</StyledButon>
       </div>
       <div style={{ display: "flex", marginTop: 20 }}>{renderIssue()}</div>
+
       <ViewDetailIssue
-        issue ={projectId}
+        issue ={issue}
         visible={isOpenModals}
+        setIsOpenModals={setIsOpenModals}
         handleOk={handleOk}
         handleCancel={handleCancel}
       />
+
     </div>
   );
 };

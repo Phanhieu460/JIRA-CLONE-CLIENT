@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import {NavLink} from 'react-router-dom'
+import {NavLink, useParams} from 'react-router-dom'
 
 const Menu = () => {
+  const params= useParams()
   return (
     <StyledMenuBar>
       <StyledAccount>
@@ -19,7 +20,7 @@ const Menu = () => {
       </StyledAccount>
       <StyledMenuControl>
         <NavLink
-          to="/board"
+          to={`/project/${params.id}/board`}
           style={{ color: "#172B4D" }}
           activeClassName="active font-weight-bold text-primary"
         >
@@ -29,7 +30,7 @@ const Menu = () => {
           </div>
         </NavLink>
         <NavLink
-          to="/project-settings"
+          to={`/project/${params.id}/project-settings`}
           style={{ color: "#172B4D" }}
           activeClassName="active font-weight-bold text-primary"
         >

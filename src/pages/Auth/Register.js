@@ -13,8 +13,9 @@ const Register = () => {
     email: "",
     password: "",
     password2: "",
+    fullName:""
   });
-  const { email, password, password2 } = dataRegister;
+  const { email, password, password2, fullName } = dataRegister;
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -28,11 +29,11 @@ const Register = () => {
     }
 
     if (isSuccess) {
-      history.push("/board");
+      history.push("/project");
     }
 
     dispatch(reset());
-  }, [isSuccess, isError]);
+  }, [user]);
 
   const handleChange = (e) => {
     setDataRegister({
@@ -50,6 +51,7 @@ const Register = () => {
       const userData = {
         email,
         password,
+        fullName
       };
 
       dispatch(register(userData));
@@ -72,6 +74,17 @@ const Register = () => {
         style={{ flex: "1 0 100%", maxWidth: 400, width: "100%", padding: 60 }}
       >
         <p className="form-title">Sign up for an account</p>
+        <Form.Item
+          name="fullName"
+          rules={[{ required: true, message: "Please input your fullname!" }]}
+        >
+          <Input
+            placeholder="Enter your full name"
+            name="fullName"
+            value={fullName}
+            onChange={handleChange}
+          />
+        </Form.Item>
         <Form.Item
           name="email"
           rules={[{ required: true, message: "Please input your email!" }]}

@@ -6,6 +6,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import { withRouter } from "react-router";
+import ProjectList from "./pages/ProjectList/ProjectList";
+import Account from "./pages/Account/Account";
+import ViewDetailIssue from "./pages/Modal/ViewDetailIssue";
 
 
 function App() {
@@ -17,13 +20,19 @@ function App() {
             Component={withRouter(Board)}
             exact
             title="Kanban Board"
-            path="/board"
+            path="/project/:id/board"
           />
           <JiraTemplate
             Component={withRouter(ProjectSettings)}
             exact
             title="Project Settings"
-            path="/project-settings"
+            path="/project/:id/project-settings"
+          />
+          <JiraTemplate
+            Component={withRouter(Account)}
+            exact
+            title="Account"
+            path="/account"
           />
           <Route
             path="/login"
@@ -36,6 +45,9 @@ function App() {
             component={Register}
           />
           <Route path="/" exact component={Login}/>
+          <Route path="/project" exact component={ProjectList}/>
+          <Route path="/project/:id/board/issues/:issueId" exact component={ViewDetailIssue}/>
+
         </Switch>
       </Router>
 

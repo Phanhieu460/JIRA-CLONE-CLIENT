@@ -6,7 +6,6 @@ const API_URL = 'http://localhost:1337'
 const createIssue = async (issueData, token) => {
   const config = {
     headers: {
-      "Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${token}`,
     },
   }
@@ -17,14 +16,14 @@ const createIssue = async (issueData, token) => {
 }
 
 // Get user Issues
-const getIssues = async (token) => {
+const getIssues = async (token, projectId) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   }
 
-  const response = await axios.get(`${API_URL}/issues`, config)
+  const response = await axios.get(`${API_URL}/issues/${projectId}/listIssue`, config)
 
   return response.data
 }
@@ -41,11 +40,35 @@ const deleteIssue = async (issueId, token) => {
 
   return response.data
 }
+const updateIssue = async (dataUpdate, issueId,token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.patch(`${API_URL}/issues/${issueId}`,dataUpdate, config)
+
+  return response.data
+}
+const searchIssue = async (dataSearch,token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.post(`${API_URL}/search`,dataSearch, config)
+
+  return response.data
+}
 
 const issueService = {
   createIssue,
   getIssues,
   deleteIssue,
+  updateIssue,
+  searchIssue
 }
 
 export default issueService

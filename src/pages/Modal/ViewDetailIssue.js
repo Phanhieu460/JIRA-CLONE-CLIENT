@@ -10,28 +10,38 @@ import {
   TagTwoTone,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { deleteIssue } from "../../features/Issue/issueSlice";
+import { deleteIssue, updateIssue } from "../../features/Issue/issueSlice";
+import { useSelector } from "react-redux";
+import { updateProject } from "../../features/Project/projectSlice";
+import { NavLink, Route, useLocation } from "react-router-dom";
 
 const { Option } = Select;
 const ViewDetailIssue = (props) => {
-  const {issue, visible, handleCancel, handleOk} =props
+  const { issue, visible, setIsOpenModals } = props;
+
   const listStatus = [
     "Backlog",
     "Selected For Development",
     "In Progress",
     "Done",
   ];
-  const [issueName, setIssueName] = useState("");
+  const [issueName, setIssueName] = useState(issue.name);
   const [commentContent, setCommentContent] = useState("");
+  const [description, setDescription] = useState(issue.description);
+  const [status, setStatus] = useState('');
+  // const [assignee, setAssignee] = useState('');
+  // const [reporter, setReporter] = useState(issue.reporter);
+  const [priority, setPriority] = useState('');
+
   const [visibleEditTaskName, setVisibleEditTaskName] = useState(false);
   let userLogin = {
     login: "Account",
     imageUrl: "",
   };
-  if(localStorage.getItem('user')) {
-    userLogin = JSON.stringify(localStorage.getItem('user'))
+  if (localStorage.getItem("user")) {
+    userLogin = JSON.parse(localStorage.getItem("user"));
   }
-  const priority = {
+  const prioritys = {
     High: <ArrowUpOutlined style={{ color: "rgb(205, 19, 23)" }} />,
     Medium: <ArrowUpOutlined style={{ color: "rgb(233, 127, 51)" }} />,
     Low: <ArrowDownOutlined style={{ color: "rgb(45, 135, 56)" }} />,
@@ -47,12 +57,21 @@ const ViewDetailIssue = (props) => {
     ),
   };
   const dispatch = useDispatch();
+  const handleOk = () => {
+    const data = {
+      issueName,
+      description,
+      priority, status
+    };
+    dispatch(updateIssue(data, issue.id));
+    setIsOpenModals(false);
+  };
   return (
     <Modal
       width={1000}
       visible={visible}
       onOk={handleOk}
-      onCancel={handleCancel}
+      onCancel={() => setIsOpenModals(false)}
       closable={false}
     >
       <Form
@@ -71,8 +90,7 @@ const ViewDetailIssue = (props) => {
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col span={16}>
             {issueType[issue.issueType]}{" "}
-            {issue.issueType === "Task" ? "TASK" : "EPIC"} -{" "}
-            {issue.id}
+            {issue.issueType === "Task" ? "TASK" : "EPIC"} - {issue.id}
           </Col>
           <Col span={8}>
             <StyledListAction>
@@ -87,7 +105,7 @@ const ViewDetailIssue = (props) => {
               <StyledActionItem
                 onClick={() => {
                   dispatch(deleteIssue(issue.id));
-                  handleCancel();
+                  setIsOpenModals(false);
                 }}
               >
                 <i className="fa fa-trash-alt" />
@@ -101,7 +119,7 @@ const ViewDetailIssue = (props) => {
           style={{ paddingTop: 10 }}
         >
           <Col span={16}>
-            {visibleEditTaskName ? (
+            {/* {visibleEditTaskName ? (
               <form
                 className="form-group"
                 style={{ display: "flex" }}
@@ -122,7 +140,7 @@ const ViewDetailIssue = (props) => {
               </form>
             ) : (
               <StyledTitle>
-                <span>Task Name</span>
+                <span>{issue.title}</span>
                 <i
                   className="fa fa-edit ml-2"
                   style={{ cursor: "pointer", fontSize: 18, color: "#23B6A4" }}
@@ -131,12 +149,21 @@ const ViewDetailIssue = (props) => {
                   }}
                 />
               </StyledTitle>
-            )}
-
+            )} */}
+            <StyledTitle>
+              <span>{issue.title}</span>
+              {/* <i
+                  className="fa fa-edit ml-2"
+                  style={{ cursor: "pointer", fontSize: 18, color: "#23B6A4" }}
+                  onClick={() => {
+                    setVisibleEditTaskName(true);
+                  }}
+                /> */}
+            </StyledTitle>
             <StyledDescription>
               <Editor
                 name="descriptionDetail"
-                initialValue="<p>A Jira clone app built with ReactJS</p>"
+                // initialValue="<p>A Jira clone app built with ReactJS</p>"
                 init={{
                   height: 150,
                   menubar: false,
@@ -153,43 +180,87 @@ const ViewDetailIssue = (props) => {
                   content_style:
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                 }}
+                value={description}
+                onEditorChange={(content, editor) => {
+                  setDescription(content);
+                }}
               />
             </StyledDescription>
-            <div style={{paddingTop: 40}}>
-
-            <span style={{fontSize: 15}}>Comment</span>
-            <div className="block-comment mt-4" style={{ display: "flex", marginTop: 25 }}>
-              <div className="avatar" style={{paadingLeft: 40}}>
-                {userLogin?.newUser?.imgUrl === "" || userLogin?.newUser?.imgUrl === null ? (
-                  <Avatar icon={<i className="fa fa-user-alt"></i>} />
-                ) : (
-                  <Avatar
-                    src={userLogin?.newUser?.imgUrl}
-                    style={{ width: 40, height: 40 }}
-                  />
-                )}
-              </div>
-              <div className="input-comment" style={{paddingLeft: 20, display: 'flex', alignItems: 'center'}}>
-                <Input
-                style={{height: 35}}
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={commentContent}
-                  onChange={(e) => {
-                    setCommentContent(e.target.value);
+            <div className="mt-3" style={{ marginTop: 10 }}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  let newDescription = issue?.description;
+                  if (description) {
+                    newDescription = description;
+                  }
+                  dispatch(updateIssue(newDescription, issue.id));
+                  // dispatch({
+                  //     type: UPDATE_TASK_SAGA,
+                  //     taskUpdate: { ...task, description: newDescription },
+                  // })
+                }}
+                style={{ marginRight: 5 }}
+              >
+                Save
+              </Button>
+              <Button
+                className="ml-2"
+                style={{ border: "none" }}
+                onClick={() => {}}
+              >
+                Cancel
+              </Button>
+            </div>
+            <div style={{ paddingTop: 40 }}>
+              <span style={{ fontSize: 15 }}>Comment</span>
+              <div
+                className="block-comment mt-4"
+                style={{ display: "flex", marginTop: 25 }}
+              >
+                <div className="avatar" style={{ paadingLeft: 40 }}>
+                  {userLogin?.newUser?.imgUrl === "" ||
+                  userLogin?.newUser?.imgUrl === null ? (
+                    <Avatar icon={<i className="fa fa-user-alt"></i>} />
+                  ) : (
+                    <Avatar
+                      src={userLogin?.newUser?.imgUrl}
+                      style={{ width: 40, height: 40 }}
+                    />
+                  )}
+                </div>
+                <div
+                  className="input-comment"
+                  style={{
+                    paddingLeft: 20,
+                    display: "flex",
+                    alignItems: "center",
                   }}
-                />
-                {/* <p>
+                >
+                  <Input
+                    style={{ height: 35 }}
+                    type="text"
+                    placeholder="Add a comment..."
+                    value={commentContent}
+                    onChange={(e) => {
+                      setCommentContent(e.target.value);
+                    }}
+                  />
+                  {/* <p>
                                                 <span style={{ fontWeight: 500, color: 'gray' }}>Protip:</span>
                                                 <span>press
                                                     <span style={{ fontWeight: 'bold', background: '#ecedf0', color: '#b4bac6' }}>M</span>
                                                     to comment</span>
                                             </p> */}
-                <Button type="primary" style={{ height: 35, marginLeft: 10 }} className="ml-2">
-                  Save
-                </Button>
+                  <Button
+                    type="primary"
+                    style={{ height: 35, marginLeft: 10 }}
+                    className="ml-2"
+                  >
+                    Save
+                  </Button>
+                </div>
               </div>
-            </div>
             </div>
             {/* <div className="lastest-comment mt-4">
                                         {renderCommnets()}
@@ -209,7 +280,12 @@ const ViewDetailIssue = (props) => {
                 {" "}
                 STATUS
               </div>
-              <Select style={{ width: 150, display: "block"}} value={issue.status} name="status">
+              <Select
+                style={{ width: 150, display: "block" }}
+                value={status}
+                onChange={(e) => setStatus(e)}
+                name="status"
+              >
                 {listStatus.map((item) => {
                   return <Option value={item}>{item}</Option>;
                 })}
@@ -228,12 +304,16 @@ const ViewDetailIssue = (props) => {
                 {" "}
                 ASSIGNEE
               </div>
-              {/* <Select
-                style={{ width: 150, display: "block" }}
-                name='assignee'
+              <span
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: 4,
+                  background: "rgb(235, 236, 240)",
+                }}
               >
-                <Option></Option>>
-              </Select> */}
+                {issue.assignee}
+              </span>
+              <Button style={{ border: "none" }}>+ ADD MORE</Button>
             </div>
             <div style={{ display: "inline-block" }}>
               <div
@@ -272,12 +352,13 @@ const ViewDetailIssue = (props) => {
               </div>
               <Select
                 style={{ width: 150, display: "block", border: "none" }}
-                value={issue.priority}
+                value={priority}
+                onChange={(e) => setPriority(e)}
                 name="priority"
               >
-                <Option value="High">{priority["High"]} High</Option>
-                <Option value="Medium">{priority["Medium"]} Medium</Option>
-                <Option value="Low">{priority["Low"]} Low</Option>
+                <Option value="High">{prioritys["High"]} High</Option>
+                <Option value="Medium">{prioritys["Medium"]} Medium</Option>
+                <Option value="Low">{prioritys["Low"]} Low</Option>
               </Select>
             </div>
             <div

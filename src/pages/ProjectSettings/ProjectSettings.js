@@ -1,20 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Input, Select } from "antd";
 import 'antd/dist/antd.min.css';
 import {Editor} from '@tinymce/tinymce-react'
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { getProject } from "../../features/Project/projectSlice";
+import { getProjectById, updateProject } from "../../features/Project/projectSlice";
+import { useParams } from "react-router-dom";
 
 const { Option } = Select;
 
 const ProjectSettings = () => {
+  const params = useParams()
+  const [name, setName] = useState('')
+  const [url, setUrl] = useState('')
+  const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
   const {projects} = useSelector(state =>state.project)
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getProject())
-  }, [dispatch])
-  console.log(projects);
+    dispatch(getProjectById(params.id))
+  }, [projects])
+
+  const handleSubmit = () => {
+    const dataProject = {
+      name, url, description, category
+    }
+    const data = {
+      dataProject, params
+    }
+    dispatch(updateProject(data))
+  }
+  console.log(projects, 'projects');
   return (
     <>
       <Form
@@ -40,7 +56,7 @@ const ProjectSettings = () => {
             },
           ]}
         >
-          <Input />
+          <Input name="name" value={projects?.project?.name} onChange={(e) => setName(e.target.value)} />
         </Form.Item>
 
         <Form.Item
@@ -53,7 +69,7 @@ const ProjectSettings = () => {
             },
           ]}
         >
-          <Input />
+          <Input name={url} value={url} onChange={(e) => setUrl(e.target.value)}/>
         </Form.Item>
 
           <Form.Item label="Description" name='description'>
@@ -74,12 +90,17 @@ const ProjectSettings = () => {
                     'removeformat | help',
                 content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
             }}
+            value={description}
+            onEditorChange={(content)=>{
+              setDescription(content)
+            }}
             />
           </Form.Item>
 
         <Form.Item label='Project Category' name='projectcategory'>
           <Select
-            defaultValue="software"
+            value={category}
+            onChange={(e) => setCategory(e)}
             style={{
               float: 'left',
               width: '100%',
@@ -97,7 +118,7 @@ const ProjectSettings = () => {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit">
+          <Button type="primary"  onClick={handleSubmit}>
             Save 
           </Button>
           <Button type='default' style={{marginLeft: 10}}>

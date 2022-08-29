@@ -26,12 +26,11 @@ const Login = () => {
     }
 
     if (isSuccess) {
-      openNotification("success", "Success", message);
-      history.push("/board");
+      history.push("/project");
     }
 
     dispatch(reset());
-  }, [isSuccess, isError]);
+  }, [user]);
 
   const handleChange = (e) => {
     setDataLogin({

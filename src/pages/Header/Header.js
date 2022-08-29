@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Breadcrumb, Dropdown, Avatar, Menu, Button, Popover } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import {  useHistory } from "react-router-dom";
+import {  NavLink, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout, reset } from "../../features/Auth/authSlice";
 
@@ -20,15 +20,15 @@ const Header = (props) => {
   const handleClick = () => {
     dispatch(logout());
     dispatch(reset())
-    history.push('login')
+    history.push('/login')
   };
 
   const content = (
     <Menu className="test">
       {/* <Menu.Item key="1" style={{ display: 'flex' }}>
-          <NavLink to="/account">
-              <div><i className="fa fa-user"></i><span className="ml-3">Account</span></div>
-          </NavLink>
+
+              <NavLink to="/account"><i className="fa fa-user"></i><span className="ml-3">Account</span></NavLink>
+
       </Menu.Item> */}
 
       <Menu.Item key="2"  >
@@ -49,7 +49,7 @@ const Header = (props) => {
     <StyledContainer>
       <div>
         <Breadcrumb>
-          <Breadcrumb.Item>Projects</Breadcrumb.Item>
+          <Breadcrumb.Item><a href="/project">Projects</a></Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="/">JIRA-CLONE</a>
           </Breadcrumb.Item>
