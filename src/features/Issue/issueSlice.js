@@ -5,6 +5,7 @@ import issueService from "./issueService";
 const userLogin = JSON.parse(localStorage.getItem('user'))
 const initialState = {
   issues: [],
+  issue:[],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -83,10 +84,10 @@ export const deleteIssue = createAsyncThunk(
 );
 export const updateIssue = createAsyncThunk(
   "issues/update",
-  async (dataUpdate,id, thunkAPI) => {
+  async (dataUpdate, thunkAPI) => {
     try {
       const token = userLogin.accessToken;
-      const response = await issueService.updateIssue(dataUpdate,id, token);
+      const response = await issueService.updateIssue(dataUpdate,dataUpdate.id, token);
       if (response.success) {
         openNotification("success", "Success", response.message);
         return response;
@@ -109,13 +110,8 @@ export const searchIssue = createAsyncThunk(
   async (dataSearch, thunkAPI) => {
     try {
       const token = userLogin.accessToken;
-      const response = await issueService.searchIssue(dataSearch, token);
-      if (response.success) {
-        openNotification("success", "Success", response.message);
-        return response;
-      } else {
-        openNotification("error", "Error", response.message);
-      }
+      return await issueService.searchIssue(dataSearch, token);
+      
     } catch (error) {
       const message =
         (error.response &&
@@ -153,9 +149,10 @@ export const issueSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getIssues.fulfilled, (state, action) => {
+
         state.isLoading = false;
         state.isSuccess = true;
-        state.issues = action.payload;
+        state.issues = action.payload.allIssue;
       })
       .addCase(getIssues.rejected, (state, action) => {
         state.isLoading = false;
@@ -198,7 +195,7 @@ export const issueSlice = createSlice({
       .addCase(searchIssue.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.issues = action.payload;
+        state.issues = action.payload.issue;
       })
       .addCase(searchIssue.rejected, (state, action) => {
         state.isLoading = false;

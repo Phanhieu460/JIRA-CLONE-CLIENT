@@ -46,7 +46,7 @@ const CreateIssue = () => {
     return () => {
       dispatch(reset());
     };
-  }, [user, projects]);
+  }, []);
   const [form] = Form.useForm();
   const handleClick = (e) => {
     const data = {

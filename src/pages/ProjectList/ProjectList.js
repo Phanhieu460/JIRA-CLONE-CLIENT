@@ -1,10 +1,10 @@
 import { DashOutlined } from "@ant-design/icons";
-import { Button, Col, Popconfirm, Popover, Row, Table, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { NavLink, useHistory, useParams } from "react-router-dom";
-import { deleteProject, getProject, reset } from "../../features/Project/projectSlice";
+import { NavLink, useHistory } from "react-router-dom";
+import { deleteProject, getProject } from "../../features/Project/projectSlice";
 import { openNotification } from "../../util/notification";
 import CreateProject from "../Modal/Project/CreateProject";
 
@@ -24,7 +24,7 @@ const ProjectList = () => {
       history.push("/login");
     }
     dispatch(getProject());
-  }, [projects]);
+  }, []);
   const handleClick = (id) => {
     dispatch(deleteProject(id))
   }

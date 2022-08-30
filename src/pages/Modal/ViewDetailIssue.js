@@ -1,39 +1,50 @@
-import { Modal, Row, Col, Form, Button, Select, Input, Avatar } from "antd";
-import React, { useState } from "react";
+import {
+  Modal,
+  Row,
+  Col,
+  Form,
+  Button,
+  Select,
+  Input,
+  Avatar,
+  Dropdown,
+  Menu,
+} from "antd";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Editor } from "@tinymce/tinymce-react";
 import {
   ArrowDownOutlined,
   ArrowUpOutlined,
-  CheckOutlined,
   CheckSquareTwoTone,
   TagTwoTone,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { deleteIssue, updateIssue } from "../../features/Issue/issueSlice";
+import { getAllUser } from "../../features/Auth/authSlice";
 import { useSelector } from "react-redux";
-import { updateProject } from "../../features/Project/projectSlice";
-import { NavLink, Route, useLocation } from "react-router-dom";
 
 const { Option } = Select;
 const ViewDetailIssue = (props) => {
   const { issue, visible, setIsOpenModals } = props;
+  const { user } = useSelector((state) => state.auth);
 
   const listStatus = [
-    "Backlog",
-    "Selected For Development",
-    "In Progress",
-    "Done",
+    "BACKLOG",
+    "IN PROGRESS",
+    "SELECTED FOR DEVELOPMENT",
+    "DONE",
   ];
-  const [issueName, setIssueName] = useState(issue.name);
+  const [title, setTitle] = useState(issue.title);
   const [commentContent, setCommentContent] = useState("");
   const [description, setDescription] = useState(issue.description);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(issue.status);
   // const [assignee, setAssignee] = useState('');
-  // const [reporter, setReporter] = useState(issue.reporter);
-  const [priority, setPriority] = useState('');
+  const [reporter, setReporter] = useState(issue.reporter);
+  const [priority, setPriority] = useState(issue.priority);
 
   const [visibleEditTaskName, setVisibleEditTaskName] = useState(false);
+
   let userLogin = {
     login: "Account",
     imageUrl: "",
@@ -56,16 +67,51 @@ const ViewDetailIssue = (props) => {
       />
     ),
   };
+
+  useEffect(() => {
+    dispatch(getAllUser());
+
+    if (!issue) return;
+    setTitle(issue.title);
+    setDescription(issue.description);
+    setStatus(issue.status);
+    setPriority(issue.priority);
+    setReporter(issue.reporter);
+  }, [issue]);
+
   const dispatch = useDispatch();
   const handleOk = () => {
     const data = {
-      issueName,
+      id: issue.id,
+      title,
       description,
-      priority, status
+      priority,
+      status,
+      reporter,
     };
-    dispatch(updateIssue(data, issue.id));
+    dispatch(updateIssue(data));
     setIsOpenModals(false);
   };
+  const menu = (
+    <Menu selectable>
+      {user?.user?.map((item) => {
+        return (
+          <Menu.Item>
+            <Avatar
+              src={item.imgUrl}
+              style={{
+                width: 20,
+                height: 20,
+                marginRight: 5,
+                cursor: "pointer",
+              }}
+            />
+            {item.fullName}
+          </Menu.Item>
+        );
+      })}
+    </Menu>
+  );
   return (
     <Modal
       width={1000}
@@ -119,26 +165,23 @@ const ViewDetailIssue = (props) => {
           style={{ paddingTop: 10 }}
         >
           <Col span={16}>
-            {/* {visibleEditTaskName ? (
-              <form
-                className="form-group"
-                style={{ display: "flex" }}
-                onSubmit={() => {
-                  setVisibleEditTaskName(false);
-                }}
-              >
-                <Input
-                  type="text"
-                  name="issueName"
-                  onChange={(e) => setIssueName(e.target.value)}
-                  required="required"
-                  value={issueName}
-                />
-                <Button type="primary" htmlType="submit" className="ml-2">
-                  OK
-                </Button>
-              </form>
+            {visibleEditTaskName ? (
+              // <form
+              //   className="form-group"
+              //   style={{ display: "flex" }}
+              //   onSubmit={() => {
+              //     setVisibleEditTaskName(false);
+              //   }}
+              // >
+              <Input
+                type="text"
+                name="title"
+                onChange={(e) => setTitle(e.target.value)}
+                required="required"
+                value={title}
+              />
             ) : (
+              // </form>
               <StyledTitle>
                 <span>{issue.title}</span>
                 <i
@@ -149,17 +192,7 @@ const ViewDetailIssue = (props) => {
                   }}
                 />
               </StyledTitle>
-            )} */}
-            <StyledTitle>
-              <span>{issue.title}</span>
-              {/* <i
-                  className="fa fa-edit ml-2"
-                  style={{ cursor: "pointer", fontSize: 18, color: "#23B6A4" }}
-                  onClick={() => {
-                    setVisibleEditTaskName(true);
-                  }}
-                /> */}
-            </StyledTitle>
+            )}
             <StyledDescription>
               <Editor
                 name="descriptionDetail"
@@ -186,7 +219,7 @@ const ViewDetailIssue = (props) => {
                 }}
               />
             </StyledDescription>
-            <div className="mt-3" style={{ marginTop: 10 }}>
+            {/* <div className="mt-3" style={{ marginTop: 10 }}>
               <Button
                 type="primary"
                 onClick={() => {
@@ -194,7 +227,7 @@ const ViewDetailIssue = (props) => {
                   if (description) {
                     newDescription = description;
                   }
-                  dispatch(updateIssue(newDescription, issue.id));
+                  dispatch(updateIssue(newDescription));
                   // dispatch({
                   //     type: UPDATE_TASK_SAGA,
                   //     taskUpdate: { ...task, description: newDescription },
@@ -211,7 +244,7 @@ const ViewDetailIssue = (props) => {
               >
                 Cancel
               </Button>
-            </div>
+            </div> */}
             <div style={{ paddingTop: 40 }}>
               <span style={{ fontSize: 15 }}>Comment</span>
               <div
@@ -313,7 +346,9 @@ const ViewDetailIssue = (props) => {
               >
                 {issue.assignee}
               </span>
-              <Button style={{ border: "none" }}>+ ADD MORE</Button>
+              {/* <Dropdown overlay={menu} placement="bottomCenter">
+                <Button style={{ border: "none" }}>+ ADD MORE</Button>
+              </Dropdown> */}
             </div>
             <div style={{ display: "inline-block" }}>
               <div
@@ -327,7 +362,35 @@ const ViewDetailIssue = (props) => {
                 {" "}
                 REPORTER
               </div>
-              <span
+              <Select
+                placeholder="Select assignee"
+                value={reporter}
+                onChange={(e) => {
+                  setReporter(e);
+                }}
+              >
+                {user?.user?.map((item) => {
+                  return (
+                    <Option
+                      value={item.fullName}
+                      key={item.id}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <Avatar
+                        src={item.imgUrl}
+                        style={{
+                          width: 20,
+                          height: 20,
+                          marginRight: 5,
+                          cursor: "pointer",
+                        }}
+                      />
+                      {item.fullName}
+                    </Option>
+                  );
+                })}
+              </Select>
+              {/* <span
                 style={{
                   padding: "4px 8px",
                   borderRadius: 4,
@@ -335,7 +398,7 @@ const ViewDetailIssue = (props) => {
                 }}
               >
                 {issue.reporter}
-              </span>
+              </span> */}
             </div>
             <div>
               <div

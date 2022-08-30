@@ -5,6 +5,7 @@ import projectService from "./projectService";
 const userLogin = JSON.parse(localStorage.getItem('user'))
 const initialState = {
     projects: [],
+    project: [],
     message: '',
     isSuccess: false,
     isError: false
@@ -13,7 +14,13 @@ const initialState = {
 export const createProject = createAsyncThunk('project/create',async (projectData, thunkAPI) => {
     try {
         const token = userLogin.accessToken;
-        return await projectService.createProject(projectData, token)
+        const response = await projectService.createProject(projectData, token)
+        if (response.success) {
+          openNotification("success", "Success", response.message);
+          return response;
+        } else {
+          openNotification("error", "Error", response.message);
+        }
     } catch (error) {
         const message =
         (error.response &&
@@ -124,6 +131,7 @@ export const getProject = createAsyncThunk(
           state.isLoading = false
           state.isError = true
           state.message = action.payload
+          state.projects = null
         })
         .addCase(getProject.pending, (state) => {
           state.isLoading = true
@@ -145,13 +153,13 @@ export const getProject = createAsyncThunk(
         .addCase(getProjectById.fulfilled, (state, action) => {
           state.isLoading = false
           state.isSuccess = true
-          state.projects = action.payload
+          state.project = action.payload
         })
         .addCase(getProjectById.rejected, (state, action) => {
           state.isLoading = false
           state.isError = true
           state.message = action.payload
-          state.projects = null
+          state.project = null
 
         })
         .addCase(updateProject.pending, (state) => {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Checkbox, notification } from "antd";
+import { Button, Form, Input, Checkbox } from "antd";
 import styled from "styled-components";
 import { NavLink, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login, reset } from "../../features/Auth/authSlice";
+import { login } from "../../features/Auth/authSlice";
 import { useSelector } from "react-redux";
 import { openNotification } from "../../util/notification";
 import Spinner from "../../components/templates/Spinner/Spinner";
@@ -25,12 +25,8 @@ const Login = () => {
       openNotification("error", "Error", message);
     }
 
-    if (isSuccess) {
-      history.push("/project");
-    }
-
-    dispatch(reset());
-  }, [user]);
+    // dispatch(reset());
+  }, []);
 
   const handleChange = (e) => {
     setDataLogin({
@@ -40,6 +36,7 @@ const Login = () => {
   };
 
   const onFinish = (e) => {
+    history.push("/project");
     const userData = {
       email,
       password,
@@ -97,7 +94,7 @@ const Login = () => {
           <StyledButton type="primary" htmlType="submit">
             Login
           </StyledButton>
-          <StyledButtonGoogle type="default" htmlType="submit">
+          {/* <StyledButtonGoogle type="default" htmlType="submit">
             <img
               style={{ height: 18, width: 18 }}
               src="https://aid-frontend.prod.atl-paas.net/atlassian-id/front-end/5.0.347/static/media/google-logo.e086107b.svg"
@@ -105,7 +102,7 @@ const Login = () => {
             />
 
             <span>Login With Google</span>
-          </StyledButtonGoogle>
+          </StyledButtonGoogle> */}
           <div>
             Not Register ? <NavLink to="/register">Create an account!</NavLink>
           </div>

@@ -41,6 +41,7 @@ const deleteIssue = async (issueId, token) => {
   return response.data
 }
 const updateIssue = async (dataUpdate, issueId,token) => {
+  console.log(dataUpdate, issueId);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -58,7 +59,7 @@ const searchIssue = async (dataSearch,token) => {
     },
   }
 
-  const response = await axios.post(`${API_URL}/search`,dataSearch, config)
+  const response = await axios.get(`${API_URL}/projects/${dataSearch.id}/issues/search?q=${dataSearch.title}`, config)
 
   return response.data
 }

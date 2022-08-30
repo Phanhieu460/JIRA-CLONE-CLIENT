@@ -11,7 +11,7 @@ import ViewDetailIssue from "../Modal/ViewDetailIssue";
 import { useSelector } from "react-redux";
 import { getIssues, reset, searchIssue } from "../../features/Issue/issueSlice";
 import { useDispatch } from "react-redux";
-import { Route, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { openNotification } from "../../util/notification";
 import { getProjectById } from "../../features/Project/projectSlice";
 
@@ -20,11 +20,13 @@ const Board = () => {
   const [isOpenModals, setIsOpenModals] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const [issue, setIssue] = useState('')
-  const [search, setSearch] = useState('')
+  const [title, setTitle] = useState('')
   const { issues, isLoading, isError, message, isSuccess } = useSelector(
     (state) => state.issues
   );
   const {projects} = useSelector(state=> state.project)
+
+  
   const dispatch = useDispatch();
   const history = useHistory();
   useEffect(() => {
@@ -41,7 +43,7 @@ const Board = () => {
     return () => {
       dispatch(reset());
     };
-  }, [issues]);
+  }, []);
   
   const handleClick = (item) => {
     setIsOpenModals(true);
@@ -77,8 +79,9 @@ const Board = () => {
   };
 
   const handleSearch = () => {
-    dispatch(searchIssue(search))
+    dispatch(searchIssue({title, id: params.id}))
   }
+
   const renderIssue = () => {
     return (
       <>
@@ -96,11 +99,9 @@ const Board = () => {
                     background: "rgb(244, 245, 247)",
                   }}
                 >
-                  {issues?.allIssue?.map((item) => {
-                    
-                    return (
-                      <div
-                      key={item.status===task.value}
+                  {issues?.map((item) => {
+                    return <>{task.value === item.status && <div
+                      key={item.status}
                         onClick={()=> handleClick(item)}
                         style={{
                           marginBottom: 10,
@@ -135,8 +136,10 @@ const Board = () => {
                             />
                           </div>
                         </div>
-                      </div>
-                    );
+                      </div> }
+      
+                      </>
+
                   })}
                 </StyledCard>
               </Col>
@@ -147,15 +150,16 @@ const Board = () => {
       </>
     );
   };
-  
   return (
     <div>
       <div style={{ display: "flex" }}>
         <StyledSearch className="search" >
-          <input className="search mt-1" name="search" value={search} onChange={(e) => setSearch(e.target.value)}  />
+          <input className="search mt-1" name="title" value={title} onChange={(e) => {
+            setTitle(e.target.value)
+            }}  />
           <i className="fa fa-search mt-2" onClick={handleSearch} />
         </StyledSearch>
-        <StyledButon>Only My Issues</StyledButon>
+        <StyledButon onClick={() => setTitle()}>Only My Issues</StyledButon>
         <StyledButon>Recently Updated</StyledButon>
       </div>
       <div style={{ display: "flex", marginTop: 20 }}>{renderIssue()}</div>

@@ -28,12 +28,8 @@ const Register = () => {
       openNotification("error", "Error", message);
     }
 
-    if (isSuccess) {
-      history.push("/project");
-    }
-
-    dispatch(reset());
-  }, [user]);
+    // dispatch(reset());
+  }, []);
 
   const handleChange = (e) => {
     setDataRegister({
@@ -55,6 +51,7 @@ const Register = () => {
       };
 
       dispatch(register(userData));
+      history.push("/project");
     }
   };
 
@@ -125,10 +122,10 @@ const Register = () => {
         </Form.Item>
 
         <Form.Item>
-          <StyledButton type="primary" htmlType="submit">
+          <StyledButton type="primary" htmlType="submit" >
             Register
           </StyledButton>
-          <StyledButtonGoogle type="default" htmlType="submit">
+          {/* <StyledButtonGoogle type="default" htmlType="submit">
             <img
               style={{ height: 18, width: 18 }}
               src="https://aid-frontend.prod.atl-paas.net/atlassian-id/front-end/5.0.347/static/media/google-logo.e086107b.svg"
@@ -136,7 +133,7 @@ const Register = () => {
             />
 
             <span>Login With Google</span>
-          </StyledButtonGoogle>
+          </StyledButtonGoogle> */}
           <div>
             Do you already have an account ?{" "}
             <NavLink to="/login">Log In</NavLink>

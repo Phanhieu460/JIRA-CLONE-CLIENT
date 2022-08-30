@@ -5,7 +5,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useDispatch } from "react-redux";
 import { createIssue } from "../../../features/Issue/issueSlice";
 import { useSelector } from "react-redux";
-import { getProject, reset } from "../../../features/Project/projectSlice";
+import { createProject, getProject, reset } from "../../../features/Project/projectSlice";
 
 import { openNotification } from "../../../util/notification";
 import { useHistory } from "react-router-dom";
@@ -23,14 +23,10 @@ const CreateProject = () => {
   );
 
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [name, setName] = useState("");
-  const [status, setStatus] = useState("");
-  const [project, setProject] = useState("");
-  const [issueType, setIssueType] = useState("");
-  const [reporter, setReporter] = useState("");
-  const [priority, setPriority] = useState("");
-  const [assignee, setAssignee] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState('')
+  const [url, setUrl] = useState('')
+  const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
 
   // useEffect(() => {
   //   if (isError) {
@@ -46,19 +42,16 @@ const CreateProject = () => {
   //   return () => {
   //     dispatch(reset());
   //   };
-  // }, [dispatch, isSuccess]);
+  // }, []);
   const [form] = Form.useForm();
   const handleClick = (e) => {
-    // const data = {
-    //   project,
-    //   issueType,
-    //   assignee,
-    //   reporter,
-    //   status,
-    //   priority,
-    //   description,
-    // };
-    // dispatch(createIssue(data));
+    const data = {
+      name,
+      description,
+      url,
+      category
+    };
+    dispatch(createProject(data));
     setIsOpenModal(false);
     form.resetFields();
   };
@@ -75,124 +68,98 @@ const CreateProject = () => {
         footer={false}
       >
         <Form
-          form={form}
-          name="basic"
-          labelCol={{
-            span: 24,
-          }}
-          wrapperCol={{
-            span: 24,
-          }}
-          initialValues={{
-            remember: true,
-          }}
-          autoComplete="off"
+        name="basic"
+        labelCol={{
+          span: 24,
+        }}
+        wrapperCol={{
+          span: 24,
+        }}
+        initialValues={{
+          remember: true,
+        }}
+        autoComplete="off"
+      >
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Please input your name!",
+            },
+          ]}
         >
-          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-            <Col span={12}>
-              <Form.Item
-                label="Name"
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                 <Input
-                  name="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-            <Col span={12}>
-              <Form.Item
-                label="Issue Type"
-                name="issueType"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select
-                  placeholder="Select issue"
-                  style={{
-                    float: "left",
-                  }}
-                  value={issueType}
-                  onChange={(e) => setIssueType(e)}
-                >
-                  <Option value="Task">Task</Option>
-                  <Option value="Epic">Epic</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          {/* <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-            <Col span={24}>
-              <Form.Item
-                label="Title"
-                name="title"
-                rules={[{ required: true }]}
-              >
-                <Input
-                  name="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-          </Row> */}
+          <Input type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} />
+        </Form.Item>
 
-          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-            <Col span={12}>
-              <Form.Item label="Lead" name="lead">
-                <Select
-                  placeholder="Select Lead"
-                  value={assignee}
-                  onChange={(e) => setAssignee(e)}
-                >
-                  {user?.user?.map((item) => {
-                    return (
-                      <Option
-                        value={item.fullName}
-                        key={item.id}
-                        style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <Avatar
-                          src={item.imgUrl}
-                          style={{
-                            width: 20,
-                            height: 20,
-                            marginRight: 5,
-                            cursor: "pointer",
-                          }}
-                        />
-                        {item.fullName}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Button
-            key="submit"
-            type="primary"
-            disabled={name && issueType ? false : true}
-            onClick={handleClick}
+        <Form.Item
+          label="URL"
+          name="url"
+          rules={[
+            {
+              required: true,
+              message: "Please input your url!",
+            },
+          ]}
+        >
+          <Input name='url' value={url} onChange={(e) => setUrl(e.target.value)}/>
+        </Form.Item>
+
+          <Form.Item label="Description" name='description'>
+            <Editor 
+            name="description"
+            init={{
+                height: 150,
+                menubar: false,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar: 'undo redo | formatselect | ' +
+                    'bold italic backcolor | alignleft aligncenter ' +
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'removeformat | help',
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            }}
+            value={description}
+            onEditorChange={(content)=>{
+              setDescription(content)
+            }}
+            />
+          </Form.Item>
+
+        <Form.Item label='Project Category' name='projectcategory'>
+          <Select
+          name="category"
+            value={category}
+            onChange={(e) => setCategory(e)}
+            style={{
+              float: 'left',
+              width: '100%',
+            }}
           >
-            Create Project
+            <Option value="software">Software</Option>
+            <Option value="marketing">Marketing</Option>
+            <Option value="business">Business</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          wrapperCol={{
+            offset: 8,
+            span: 16,
+          }}
+        >
+          <Button type="primary"  onClick={handleClick}>
+            Save 
           </Button>
-          ,
-          <Button key="back" onClick={() => setIsOpenModal(false)}>
+          <Button type='default' style={{marginLeft: 10}}>
             Cancel
           </Button>
-        </Form>
+        </Form.Item>
+      </Form>
       </Modal>
     </>
   );

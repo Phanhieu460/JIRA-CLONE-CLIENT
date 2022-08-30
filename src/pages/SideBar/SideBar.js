@@ -62,7 +62,7 @@ const SideBar = () => {
           {/* <div onClick={handleClick}>
             <i className="fa-solid fa-plus"></i>
           </div> */}
-          <SearchIssue />
+          {/* <SearchIssue /> */}
           <CreateIssue />
           <div>
             <Tooltip placement="rightTop" title={text}>

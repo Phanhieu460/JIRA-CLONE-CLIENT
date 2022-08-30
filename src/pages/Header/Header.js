@@ -1,12 +1,16 @@
-import React from "react";
+import React,{useEffect} from "react";
 import styled from "styled-components";
-import { Breadcrumb, Dropdown, Avatar, Menu, Button, Popover } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import {  NavLink, useHistory } from "react-router-dom";
+import { Breadcrumb, Avatar, Menu, Popover } from "antd";
+import {  NavLink, useHistory, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout, reset } from "../../features/Auth/authSlice";
+import { getProjectById } from "../../features/Project/projectSlice";
+import { useSelector } from "react-redux";
 
 const Header = (props) => {
+  const params = useParams()
+  const {projects} = useSelector(state => state.project)
+
   let userLogin = {
     fullName: "Account",
     imgUrl: "",
@@ -14,9 +18,14 @@ const Header = (props) => {
   if (localStorage.getItem("user")) {
     userLogin = JSON.parse(localStorage.getItem('user'))
   }
-
+  
   const dispatch = useDispatch();
   const history = useHistory();
+  // useEffect(() => {
+  //   dispatch(getProjectById(params.id))
+  // }, [])
+  
+
   const handleClick = () => {
     dispatch(logout());
     dispatch(reset())
@@ -51,10 +60,10 @@ const Header = (props) => {
         <Breadcrumb>
           <Breadcrumb.Item><a href="/project">Projects</a></Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="/">JIRA-CLONE</a>
+            <a href="">JIRA</a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="/">{props.title}</a>
+            <a href="">{props.title}</a>
           </Breadcrumb.Item>
         </Breadcrumb>
         <h2>{props.title}</h2>
