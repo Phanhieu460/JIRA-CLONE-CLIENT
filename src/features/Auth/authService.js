@@ -30,12 +30,18 @@ const login = async (userData) => {
 const logout = () => {
     localStorage.removeItem('user')
 }
-
+const updateUser = async (dataUpdate, userId) => {
+  
+    const response = await axios.patch(`${API_URL}/user/${userId}`,dataUpdate)
+  
+    return response.data
+  }
 const authService = {
     getUserById,
     getAll,
     login,
     register, 
-    logout
+    logout,
+    updateUser
 }
 export default authService

@@ -87,7 +87,7 @@ const Board = () => {
       <>
         {tasks?.map((task, index) => {
           return (
-            <Row gutter={16}>
+            <Row gutter={16} key={index}>
               <Col span={4}>
                 <StyledCard
                   key={index}

@@ -3,13 +3,14 @@ import styled from "styled-components";
 import { Breadcrumb, Avatar, Menu, Popover } from "antd";
 import {  NavLink, useHistory, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout, reset } from "../../features/Auth/authSlice";
+import { getUserById, logout, reset } from "../../features/Auth/authSlice";
 import { getProjectById } from "../../features/Project/projectSlice";
 import { useSelector } from "react-redux";
 
 const Header = (props) => {
   const params = useParams()
-  const {projects} = useSelector(state => state.project)
+  const {project} = useSelector(state => state.project)
+  const {user} = useSelector(state => state.auth)
 
   let userLogin = {
     fullName: "Account",
@@ -21,9 +22,10 @@ const Header = (props) => {
   
   const dispatch = useDispatch();
   const history = useHistory();
-  // useEffect(() => {
-  //   dispatch(getProjectById(params.id))
-  // }, [])
+  useEffect(() => {
+    dispatch(getUserById(userLogin.newUser.id))
+    dispatch(getProjectById(params.id))
+  }, [])
   
 
   const handleClick = () => {
@@ -34,11 +36,11 @@ const Header = (props) => {
 
   const content = (
     <Menu className="test">
-      {/* <Menu.Item key="1" style={{ display: 'flex' }}>
+      <Menu.Item key="1" style={{ display: 'flex' }}>
 
               <NavLink to="/account"><i className="fa fa-user"></i><span className="ml-3">Account</span></NavLink>
 
-      </Menu.Item> */}
+      </Menu.Item>
 
       <Menu.Item key="2"  >
           <div onClick={handleClick}>
@@ -60,7 +62,7 @@ const Header = (props) => {
         <Breadcrumb>
           <Breadcrumb.Item><a href="/project">Projects</a></Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">JIRA</a>
+            <a href={`/project/${project?.project?.id}/board`}>{project?.project?.name}</a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="">{props.title}</a>
@@ -76,11 +78,11 @@ const Header = (props) => {
           placement="bottomRight"
           trigger="click"
         >
-          {userLogin?.newUser?.imgUrl === "" || userLogin?.newUser?.imgUrl === null ? (
+          {user?.user?.imgUrl === "" || user?.user?.imgUrl === null ? (
             <Avatar icon={<i className="fa fa-user-alt"></i>} />
           ) : (
             <Avatar
-              src={userLogin?.newUser?.imgUrl}
+              src={user?.user?.imgUrl}
               style={{ width: 40, height: 40, cursor: "pointer" }}
             />
           )}

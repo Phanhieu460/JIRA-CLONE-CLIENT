@@ -6,6 +6,7 @@ import authService from './authService'
 const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
+  users: [],
   user: user ? user : null,
   isError: false,
   isSuccess: false,
@@ -88,6 +89,29 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   await authService.logout()
 })
 
+export const updateUser = createAsyncThunk(
+  "user/update",
+  async (dataUpdate, thunkAPI) => {
+    try {
+      const response = await authService.updateUser(dataUpdate,dataUpdate.id);
+      if (response.success) {
+        openNotification("success", "Success", response.message);
+        return response;
+      } else {
+        openNotification("error", "Error", response.message);
+      }
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -149,13 +173,13 @@ export const authSlice = createSlice({
       .addCase(getAllUser.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.user = action.payload
+        state.users = action.payload
         state.message = action.payload.message
       })
       .addCase(getAllUser.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
-        state.user = null
+        state.users = null
       })
       .addCase(getUserById.pending, (state) => {
         state.isLoading = true
@@ -167,6 +191,20 @@ export const authSlice = createSlice({
         state.message = action.payload.message
       })
       .addCase(getUserById.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.user = null
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.user = action.payload
+        state.message = action.payload.message
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.user = null

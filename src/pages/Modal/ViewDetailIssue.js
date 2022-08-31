@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 const { Option } = Select;
 const ViewDetailIssue = (props) => {
   const { issue, visible, setIsOpenModals } = props;
-  const { user } = useSelector((state) => state.auth);
+  const { users } = useSelector((state) => state.auth);
 
   const listStatus = [
     "BACKLOG",
@@ -94,9 +94,9 @@ const ViewDetailIssue = (props) => {
   };
   const menu = (
     <Menu selectable>
-      {user?.user?.map((item) => {
+      {users?.user?.map((item) => {
         return (
-          <Menu.Item>
+          <Menu.Item key={item.id}>
             <Avatar
               src={item.imgUrl}
               style={{
@@ -173,13 +173,19 @@ const ViewDetailIssue = (props) => {
               //     setVisibleEditTaskName(false);
               //   }}
               // >
+              <div style={{display: 'flex'}}>
               <Input
                 type="text"
                 name="title"
                 onChange={(e) => setTitle(e.target.value)}
                 required="required"
                 value={title}
+                
               />
+              <Button onClick={() => {
+                  setVisibleEditTaskName(false);
+                }}>X</Button>
+              </div>
             ) : (
               // </form>
               <StyledTitle>
@@ -320,7 +326,7 @@ const ViewDetailIssue = (props) => {
                 name="status"
               >
                 {listStatus.map((item) => {
-                  return <Option value={item}>{item}</Option>;
+                  return <Option key={item} value={item}>{item}</Option>;
                 })}
               </Select>
             </div>
@@ -369,7 +375,7 @@ const ViewDetailIssue = (props) => {
                   setReporter(e);
                 }}
               >
-                {user?.user?.map((item) => {
+                {users?.user?.map((item) => {
                   return (
                     <Option
                       value={item.fullName}
@@ -458,4 +464,6 @@ const StyledTitle = styled.div`
     font-size: 24px;
   }
 `;
-const StyledDescription = styled.div``;
+const StyledDescription = styled.div`
+  padding-top: 20px;
+`;

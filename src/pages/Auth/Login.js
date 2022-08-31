@@ -36,13 +36,13 @@ const Login = () => {
   };
 
   const onFinish = (e) => {
-    history.push("/project");
     const userData = {
       email,
       password,
     };
-
+    
     dispatch(login(userData));
+    history.push("/project");
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -94,7 +94,7 @@ const Login = () => {
           <StyledButton type="primary" htmlType="submit">
             Login
           </StyledButton>
-          {/* <StyledButtonGoogle type="default" htmlType="submit">
+          <StyledButtonGoogle type="default" htmlType="submit">
             <img
               style={{ height: 18, width: 18 }}
               src="https://aid-frontend.prod.atl-paas.net/atlassian-id/front-end/5.0.347/static/media/google-logo.e086107b.svg"
@@ -102,7 +102,7 @@ const Login = () => {
             />
 
             <span>Login With Google</span>
-          </StyledButtonGoogle> */}
+          </StyledButtonGoogle>
           <div>
             Not Register ? <NavLink to="/register">Create an account!</NavLink>
           </div>

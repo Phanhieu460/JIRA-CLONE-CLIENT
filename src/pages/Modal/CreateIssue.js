@@ -17,7 +17,7 @@ const CreateIssue = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { user } = useSelector((state) => state.auth);
+  const { users, user } = useSelector((state) => state.auth);
   const { projects, isSuccess, isError, message } = useSelector(
     (state) => state.project
   );
@@ -232,7 +232,7 @@ const CreateIssue = () => {
                     console.log(e)
                     setAssignee(e)}}
                 >
-                  {user?.user?.map((item) => {
+                  {users?.user?.map((item) => {
                     return (
                       <Option
                         value={item.fullName}
@@ -262,7 +262,7 @@ const CreateIssue = () => {
                   value={reporter}
                   onChange={(e) => setReporter(e)}
                 >
-                  {user?.user?.map((item) => {
+                  {users?.user?.map((item) => {
                     return (
                       <Option
                         value={item.fullName}

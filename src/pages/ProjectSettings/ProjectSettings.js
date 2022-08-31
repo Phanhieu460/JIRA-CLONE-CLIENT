@@ -70,7 +70,6 @@ const ProjectSettings = () => {
         <Col span={24}>
           <Form.Item
             label="Name"
-            name="name"
             rules={[
               {
                 required: true,
@@ -91,7 +90,6 @@ const ProjectSettings = () => {
         <Col span={24}>
           <Form.Item
             label="URL"
-            name="url"
             rules={[
               {
                 required: true,
@@ -110,7 +108,7 @@ const ProjectSettings = () => {
 
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col span={24}>
-          <Form.Item label="Description" name="description">
+          <Form.Item label="Description">
             <Editor
               name="description"
               init={{
@@ -139,7 +137,7 @@ const ProjectSettings = () => {
       </Row>
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col span={24}>
-          <Form.Item label="Project Category" name="projectcategory">
+          <Form.Item label="Project Category">
             <Select
               name="category"
               value={category}
