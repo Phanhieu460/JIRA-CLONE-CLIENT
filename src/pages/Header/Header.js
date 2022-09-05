@@ -30,7 +30,7 @@ const Header = (props) => {
 
   const handleClick = () => {
     dispatch(logout());
-    dispatch(reset())
+    // dispatch(reset())
     history.push('/login')
   };
 

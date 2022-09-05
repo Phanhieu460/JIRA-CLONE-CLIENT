@@ -3,17 +3,18 @@ import { Modal, Form, Button, Input, Select, Col, Row, Avatar } from "antd";
 import "antd/dist/antd.min.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { useDispatch } from "react-redux";
-import { createIssue } from "../../features/Issue/issueSlice";
+import { createIssue, getIssues } from "../../features/Issue/issueSlice";
 import { useSelector } from "react-redux";
 import { getProject, reset } from "../../features/Project/projectSlice";
 
 import { openNotification } from "../../util/notification";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { getAllUser } from "../../features/Auth/authSlice";
 
 const { Option } = Select;
 
 const CreateIssue = () => {
+  const params = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -43,10 +44,10 @@ const CreateIssue = () => {
 
     dispatch(getProject());
     dispatch(getAllUser());
-    return () => {
-      dispatch(reset());
-    };
-  }, []);
+    // return () => {
+    //   dispatch(reset());
+    // };
+  }, [dispatch, history, isSuccess, message, isError]);
   const [form] = Form.useForm();
   const handleClick = (e) => {
     const data = {
@@ -60,6 +61,7 @@ const CreateIssue = () => {
       description,
     };
     dispatch(createIssue(data));
+    dispatch(getIssues(params.id));
     setIsOpenModal(false);
     setTitle("");
     setIssueType("");
@@ -163,7 +165,15 @@ const CreateIssue = () => {
           </Row>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col span={12}>
-              <Form.Item label="Status" name="status">
+              <Form.Item
+                label="Status"
+                name="status"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Select
                   placeholder="Select status"
                   value={status}
@@ -229,8 +239,9 @@ const CreateIssue = () => {
                   placeholder="Select assignee"
                   value={assignee}
                   onChange={(e) => {
-                    console.log(e)
-                    setAssignee(e)}}
+                    console.log(e);
+                    setAssignee(e);
+                  }}
                 >
                   {users?.user?.map((item) => {
                     return (
@@ -289,7 +300,7 @@ const CreateIssue = () => {
           <Button
             key="submit"
             type="primary"
-            disabled={title && issueType ? false : true}
+            disabled={title && issueType && status ? false : true}
             onClick={handleClick}
           >
             Create Issue

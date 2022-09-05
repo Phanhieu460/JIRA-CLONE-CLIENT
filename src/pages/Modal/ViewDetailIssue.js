@@ -20,12 +20,14 @@ import {
   TagTwoTone,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { deleteIssue, updateIssue } from "../../features/Issue/issueSlice";
+import { deleteIssue, getIssues, updateIssue } from "../../features/Issue/issueSlice";
 import { getAllUser } from "../../features/Auth/authSlice";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const { Option } = Select;
 const ViewDetailIssue = (props) => {
+  const params = useParams()
   const { issue, visible, setIsOpenModals } = props;
   const { users } = useSelector((state) => state.auth);
 
@@ -91,6 +93,7 @@ const ViewDetailIssue = (props) => {
     };
     dispatch(updateIssue(data));
     setIsOpenModals(false);
+    dispatch(getIssues(params.id));
   };
   const menu = (
     <Menu selectable>

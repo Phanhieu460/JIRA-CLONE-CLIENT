@@ -152,7 +152,7 @@ export const issueSlice = createSlice({
 
         state.isLoading = false;
         state.isSuccess = true;
-        state.issues = action.payload.allIssue;
+        state.issues = action.payload;
       })
       .addCase(getIssues.rejected, (state, action) => {
         state.isLoading = false;
@@ -195,7 +195,7 @@ export const issueSlice = createSlice({
       .addCase(searchIssue.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.issues = action.payload.issue;
+        state.issues = action.payload;
       })
       .addCase(searchIssue.rejected, (state, action) => {
         state.isLoading = false;
