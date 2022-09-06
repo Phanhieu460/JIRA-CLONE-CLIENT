@@ -33,8 +33,8 @@ const ViewDetailIssue = (props) => {
 
   const listStatus = [
     "BACKLOG",
-    "IN PROGRESS",
     "SELECTED FOR DEVELOPMENT",
+    "IN PROGRESS",
     "DONE",
   ];
   const [title, setTitle] = useState(issue.title);

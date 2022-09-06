@@ -3,10 +3,12 @@ import { Button, Form, Input, Checkbox } from "antd";
 import styled from "styled-components";
 import { NavLink, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../../features/Auth/authSlice";
+import { login, loginWithGoogle } from "../../features/Auth/authSlice";
 import { useSelector } from "react-redux";
 import { openNotification } from "../../util/notification";
 import Spinner from "../../components/templates/Spinner/Spinner";
+import { GoogleLogin } from "react-google-login";
+import axios from "axios";
 
 const Login = () => {
   const [dataLogin, setDataLogin] = useState({
@@ -40,7 +42,7 @@ const Login = () => {
       email,
       password,
     };
-    
+
     dispatch(login(userData));
     history.push("/project");
   };
@@ -51,6 +53,23 @@ const Login = () => {
   if (isLoading) {
     <Spinner />;
   }
+  // const sendGoogleToken = (tokenId) => {
+  //   axios
+  //     .get(`http://localhost:1337/user/google`, {
+  //       idToken: tokenId,
+  //     })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       // informParent(res);
+  //     })
+  //     .catch((error) => {
+  //       console.log("GOOGLE SIGNIN ERROR", error.response);
+  //     });
+  // };
+  const responseGoogle = () => {
+    window.open("http://localhost:1337/user/google/callback", "_blank");
+    // sendGoogleToken(response.tokenId)
+  };
   return (
     <StyledContainer className="login-page">
       <StyledForm
@@ -94,7 +113,7 @@ const Login = () => {
           <StyledButton type="primary" htmlType="submit">
             Login
           </StyledButton>
-          <StyledButtonGoogle type="default" htmlType="submit">
+          <StyledButtonGoogle onClick={responseGoogle} type="default">
             <img
               style={{ height: 18, width: 18 }}
               src="https://aid-frontend.prod.atl-paas.net/atlassian-id/front-end/5.0.347/static/media/google-logo.e086107b.svg"
@@ -108,6 +127,16 @@ const Login = () => {
           </div>
         </Form.Item>
       </StyledForm>
+      {/* <div>
+
+          <GoogleLogin
+            clientId='82385819004-t3jg92vo0fkdka4sklrdrjnv679f5l44.apps.googleusercontent.com'
+            buttonText="Login With Google"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+            cookiePolicy={'single_host_origin'}
+          ></GoogleLogin>
+      </div> */}
     </StyledContainer>
   );
 };
