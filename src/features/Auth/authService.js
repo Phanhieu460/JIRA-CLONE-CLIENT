@@ -1,10 +1,6 @@
 import axios from 'axios'
 
 const API_URL = 'http://localhost:1337'
-const loginWithGoogle = async () => {
-    const response = await axios.post(`${API_URL}/user/google`)
-    return response.data
-}
 const getAll = async () => {
     const response = await axios.get(`${API_URL}/user/listUser`)
     return response.data
@@ -47,6 +43,5 @@ const authService = {
     register, 
     logout,
     updateUser,
-    loginWithGoogle
 }
 export default authService

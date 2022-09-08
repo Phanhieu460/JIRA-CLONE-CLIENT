@@ -24,6 +24,8 @@ import { deleteIssue, getIssues, updateIssue } from "../../features/Issue/issueS
 import { getAllUser } from "../../features/Auth/authSlice";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { DatePicker } from 'antd';
+import moment from 'moment'
 
 const { Option } = Select;
 const ViewDetailIssue = (props) => {
@@ -41,9 +43,10 @@ const ViewDetailIssue = (props) => {
   const [commentContent, setCommentContent] = useState("");
   const [description, setDescription] = useState(issue.description);
   const [status, setStatus] = useState(issue.status);
-  // const [assignee, setAssignee] = useState('');
+  const [assignee, setAssignee] = useState(issue.assignee);
   const [reporter, setReporter] = useState(issue.reporter);
   const [priority, setPriority] = useState(issue.priority);
+  const [dueDate, setDueDate] = useState(issue.dueDate)
 
   const [visibleEditTaskName, setVisibleEditTaskName] = useState(false);
 
@@ -79,6 +82,8 @@ const ViewDetailIssue = (props) => {
     setStatus(issue.status);
     setPriority(issue.priority);
     setReporter(issue.reporter);
+    setDueDate(issue.dueDate)
+    setAssignee(issue.assignee)
   }, [issue]);
 
   const dispatch = useDispatch();
@@ -90,6 +95,8 @@ const ViewDetailIssue = (props) => {
       priority,
       status,
       reporter,
+      dueDate,
+      assignee
     };
     dispatch(updateIssue(data));
     setIsOpenModals(false);
@@ -155,6 +162,7 @@ const ViewDetailIssue = (props) => {
                 onClick={() => {
                   dispatch(deleteIssue(issue.id));
                   setIsOpenModals(false);
+                  dispatch(getIssues(params.id));
                 }}
               >
                 <i className="fa fa-trash-alt" />
@@ -346,15 +354,34 @@ const ViewDetailIssue = (props) => {
                 {" "}
                 ASSIGNEE
               </div>
-              <span
-                style={{
-                  padding: "4px 8px",
-                  borderRadius: 4,
-                  background: "rgb(235, 236, 240)",
+                <Select
+                placeholder="Select assignee"
+                value={assignee}
+                onChange={(e) => {
+                  setAssignee(e);
                 }}
               >
-                {issue.assignee}
-              </span>
+                {users?.user?.map((item) => {
+                  return (
+                    <Option
+                      value={item.fullName}
+                      key={item.id}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <Avatar
+                        src={item.imgUrl}
+                        style={{
+                          width: 20,
+                          height: 20,
+                          marginRight: 5,
+                          cursor: "pointer",
+                        }}
+                      />
+                      {item.fullName}
+                    </Option>
+                  );
+                })}
+              </Select>
               {/* <Dropdown overlay={menu} placement="bottomCenter">
                 <Button style={{ border: "none" }}>+ ADD MORE</Button>
               </Dropdown> */}
@@ -372,7 +399,7 @@ const ViewDetailIssue = (props) => {
                 REPORTER
               </div>
               <Select
-                placeholder="Select assignee"
+                placeholder="Select reporter"
                 value={reporter}
                 onChange={(e) => {
                   setReporter(e);
@@ -399,15 +426,6 @@ const ViewDetailIssue = (props) => {
                   );
                 })}
               </Select>
-              {/* <span
-                style={{
-                  padding: "4px 8px",
-                  borderRadius: 4,
-                  background: "rgb(235, 236, 240)",
-                }}
-              >
-                {issue.reporter}
-              </span> */}
             </div>
             <div>
               <div
@@ -432,6 +450,24 @@ const ViewDetailIssue = (props) => {
                 <Option value="Medium">{prioritys["Medium"]} Medium</Option>
                 <Option value="Low">{prioritys["Low"]} Low</Option>
               </Select>
+            </div>
+            <div>
+              <div
+                style={{
+                  fontWeight: 600,
+                  margin: "24px 0px 5px",
+                  textTransform: "uppercase",
+                  color: "rgb(94, 108, 132)",
+                  fontSize: "12.5px",
+                }}
+              >
+                {" "}
+                DUE DATE
+              </div>
+              <DatePicker format={"DD-MM-YYYY"} value={dueDate ? moment(dueDate) : ''}  onChange={(dateString) => {
+                setDueDate(dateString)
+                console.log(Date.parse(dateString),moment(dueDate).format('YYYY-MM-DD'), Date.now())
+                }} />
             </div>
             <div
               style={{
@@ -458,7 +494,9 @@ const StyledListAction = styled.div`
   display: flex;
   justify-content: space-around;
 `;
-const StyledActionItem = styled.div`
+const StyledActionItem = styled(Button)`
+  border: none;
+  background: none;
   cursor: pointer;
 `;
 const StyledTitle = styled.div`

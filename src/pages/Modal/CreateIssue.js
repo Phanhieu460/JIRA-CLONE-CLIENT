@@ -239,7 +239,6 @@ const CreateIssue = () => {
                   placeholder="Select assignee"
                   value={assignee}
                   onChange={(e) => {
-                    console.log(e);
                     setAssignee(e);
                   }}
                 >

@@ -9,6 +9,7 @@ import { withRouter } from "react-router";
 import ProjectList from "./pages/ProjectList/ProjectList";
 import Account from "./pages/Account/Account";
 import ViewDetailIssue from "./pages/Modal/ViewDetailIssue";
+import LoginGoogle  from "./pages/Auth/LoginGoogle";
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
           <Route path="/" exact component={Login}/>
           <Route path="/project" exact component={ProjectList}/>
           <Route path="/project/:id/board/issues/:issueId" exact component={ViewDetailIssue}/>
+          <Route path="/google"  component={LoginGoogle}/>
 
         </Switch>
       </Router>

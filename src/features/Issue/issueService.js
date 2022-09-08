@@ -41,7 +41,6 @@ const deleteIssue = async (issueId, token) => {
   return response.data
 }
 const updateIssue = async (dataUpdate, issueId,token) => {
-  console.log(dataUpdate, issueId);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,

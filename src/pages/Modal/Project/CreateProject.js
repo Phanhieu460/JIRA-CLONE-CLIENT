@@ -28,21 +28,21 @@ const CreateProject = () => {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
 
-  // useEffect(() => {
-  //   if (isError) {
-  //     openNotification("error", "Error", message);
-  //   }
+  useEffect(() => {
+    if (isError) {
+      openNotification("error", "Error", message);
+    }
 
-  //   if (!user) {
-  //     history.push("/login");
-  //   }
+    if (!user) {
+      history.push("/login");
+    }
 
   //   dispatch(getProject());
   //   dispatch(getAllUser());
   //   return () => {
   //     dispatch(reset());
   //   };
-  // }, []);
+  }, []);
   const [form] = Form.useForm();
   const handleClick = (e) => {
     const data = {
@@ -54,6 +54,7 @@ const CreateProject = () => {
     dispatch(createProject(data));
     setIsOpenModal(false);
     form.resetFields();
+    dispatch(getProject());
   };
 
   return (

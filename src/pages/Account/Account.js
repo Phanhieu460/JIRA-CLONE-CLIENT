@@ -36,7 +36,7 @@ const Account = () => {
       id: userLogin.newUser.id,
     };
     dispatch(updateUser(data));
-    console.log(user, "user");
+    dispatch(getUserById(userLogin.newUser.id));
   };
   const [form] = Form.useForm();
   return (

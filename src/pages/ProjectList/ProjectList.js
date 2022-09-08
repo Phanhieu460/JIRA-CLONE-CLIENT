@@ -1,6 +1,6 @@
 import { DashOutlined } from "@ant-design/icons";
-import { Tooltip } from "antd";
-import React, { useEffect } from "react";
+import { Tooltip, Button } from "antd";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { NavLink, useHistory } from "react-router-dom";
@@ -10,6 +10,7 @@ import CreateProject from "../Modal/Project/CreateProject";
 
 const ProjectList = () => {
   const { user } = useSelector((state) => state.auth);
+  const [dataProjects, setDataProjects] = useState([]);
   const { projects, isSuccess, message, isError } = useSelector(
     (state) => state.project
   );
@@ -20,13 +21,19 @@ const ProjectList = () => {
       openNotification("error", "Error", message);
     }
 
-    if (!user) {
-      history.push("/login");
-    }
+    // if (!user) {
+    //   history.push("/login");
+    // }
     dispatch(getProject());
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!projects) return;
+    setDataProjects(projects.allProject);
+  }, [projects]);
   const handleClick = (id) => {
     dispatch(deleteProject(id))
+    dispatch(getProject());
   }
   return (
     <div style={{ minWidth: "800px", margin: "0px", padding: "0px 40px" }}>
@@ -50,7 +57,7 @@ const ProjectList = () => {
         <tbody
           style={{ borderBottom: " 2px solid #DFE1E6", textAlign: "center" }}
         >
-          {projects?.allProject?.map((item) => {
+          {projects && dataProjects?.map((item) => {
             return (
               <tr style={{ height: 40 }}>
                 <td style={{ width: "20%" }}>
@@ -60,7 +67,7 @@ const ProjectList = () => {
                 </td>
                 <td style={{ width: "15%" }}>JIRA</td>
                 <td style={{ width: "20%" }}>Team-managed software</td>
-                <td style={{ width: "20%" }}></td>
+                <td style={{ width: "20%" }}>Phan Hieu</td>
                 <td>
                   <Tooltip
                     style={{ background: "white" }}
@@ -69,10 +76,10 @@ const ProjectList = () => {
                         <NavLink to={`/project/${item.id}/project-settings`}>
                           Project Settings
                         </NavLink>
-                        <div onClick={() => handleClick(item.id)}>
+           
 
-                        <span style={{cursor:'pointer'}} >Move to trash</span>
-                        </div>
+                        <Button onClick={() => handleClick(item.id)} style={{color: '#fff', cursor:'pointer', background: 'none', border: 'none'}} >Move to trash</Button>
+          
                       </div>
                     }
                     placement="bottomRight"
